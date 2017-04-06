@@ -54,10 +54,12 @@ Released   : 20120225
 							<h2>About Me</h2>
 								<div class="entry">
 
-								<p>I am a research scientist at Facebook Artificial Intelligence Research. I'm interested in understanding learning and decision-making (human and machine). I am also interested in causal inference and causal discovery, which I view as important components towards having truly smart decision-makers (again, either human or machine).
+								<p>Currently, I am a research scientist at Facebook Artificial Intelligence Research. I'm interested in understanding learning and decision-making (human and machine). I am also interested in causal inference, experimentation, active learning and causal discovery, which I view as important components for having truly smart decision-makers. Recently I've also become interested in using simple games as platforms to help build AI which can understand natural language.
 								</p>
 
-								<p>I'm also a huge fan of <a href="https://www.facebook.com/notes/facebook-data-science/data-science-for-social-good/10152669477928859" target=new>data science for civic improvement and social good</a>. Check out a cool <a href="https://seanjtaylor.github.io/out-for-justice/" target=new>project</a> a bunch of us built at a hackathon sponsored by Bayes Impact.</p>
+								<p>I spent 2 years working on Facebook News Feed where I helped started the data science team. We worked on, among other things, advanced experimentation techniques, understanding network effects and improving the way we measure various outcomes. This <a href="http://www.slate.com/articles/technology/cover_story/2016/01/how_facebook_s_news_feed_algorithm_works.html" target=new>Slate piece</a>  does a great job of describing some of our work, including our human evaluator program. This <a href="http://fortune.com/2016/08/04/facebook-algorithm-clickbait/" target=new>Fortune article</a> reports on our work on clickbait detection.</p>
+
+								<p>I'm a huge fan of <a href="https://www.facebook.com/notes/facebook-data-science/data-science-for-social-good/10152669477928859" target=new>data science for civic improvement and social good</a>. Check out a cool <a href="https://seanjtaylor.github.io/out-for-justice/" target=new>project</a> a bunch of us built at a hackathon sponsored by Bayes Impact.</p>
 
 								<p>My work has been published in a number of academic journals and I've written popular press articles for <i>WIRED</i> and <i>New York Times</i>.</p>
 
@@ -69,28 +71,44 @@ Released   : 20120225
 						<div class="post">
 							<h2>Research</h2>
 								<div class="entry">
-									<h3>2016</h3>
-									<div class="paper">"Detecting heterogeneous treatment effects by combining observational and experimental data" (with Akos Lada) <br> (Submitted) [Arxiv] </br>
-									<small><i>Summary: A simple recipe: use observational data to estimate unit-level causal effects, these estimates are biased but can be an input into your favorite experiment-based heterogeneous treatment effects detector. We show when and why this can make estimation of heterogeneous effects in randomized trials easier.
+									<h3>Working Papers</h3>
+
+									<div class="paper">"In-Group favoritism caused by Pokemon Go and the use of machine learning for principled investigation of potential moderators" (with Dave Rand) <br> (Under review) [<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2908978" target="new">SSRN PDF</a>] </br>
+									<small><i>Summary: A large body of laboratory-based research suggests that arbitrary group assignments (i.e. "minimal groups"') can lead to in-group bias. We use the release of a popular augmented reality game Pokemon Go to study this phenomenon in a hybrid lab-field experiment.
 									</i></small></div>
 
-									<div class="paper">"Learning causal models from many experiments: meta-analysis with regularized instrumental variables" (with Dean Eckles) <br> [Arxiv coming soon] </br>
-									<small><i>Summary: How can we combine hundreds or thousands of randomized trials to learn generalizable knowledge? Use modified IV methods!
+
+									<div class="paper">"Learning causal models from many experiments: meta-analysis with regularized instrumental variables" (with Dean Eckles) <br> <i>Poster at NIPS2016 "What If?" Workshop </i> (Under review) [<a href='https://arxiv.org/abs/1701.01140' target="new">Arxiv</a>] </br>
+									<small><i>Summary: We show how to use modified IV methods to combine hundreds or thousands of randomized trials to learn generalizable knowledge.
 									</i></small></div>
 
 									<div class="paper">"Paying (for) Attention: The Impact of Information Processing Costs on Bayesian Inference" (with Xiaosheng Mu and Scott Kominers) <br> [<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2857978" target="new">Working Paper PDF</a>] (under review) </br>
 									<small><i>Summary: What happens to learning if Bayesian updated is even slightly costly? Turns out, things can get arbitrarily bad.
 									</i></small></div>
 
+									<div class="paper">"Detecting heterogeneous treatment effects by combining observational and experimental data" (with Akos Lada) <br> [<a href="https://arxiv.org/abs/1611.02385" target="new">Arxiv</a>] </br>
+									<small><i>Summary: We show how to use observational data to estimate unit-level causal effects. We show when and why this can make estimation of heterogeneous effects in randomized trials easier despite the fact that observational estimates are often biased by unobserved confounders.
+									</i></small></div>
+
+									<h3>2017</h3>
+									<div class="paper">"Multi-Agent Cooperation and the Emergence of (Natural) Language" (with Angeliki Lazaridou and Marco Baroni) <br> Forthcoming at <i>ICLR 2017</i> [<a href="https://arxiv.org/abs/1612.07182" target="new">Arxiv</a>] </br>
+									<small><i>Summary: We study how machines can learn language from having to coordinate to solve simple problems rather than from masses of labeled or unlabeled data.
+									</i></small></div>
+
+									<h3>2016</h3>
 									<div class="paper">"The Good, the Bad, and the Unflinchingly Selfish: Cooperative Decision-Making Can Be Predicted with High Accuracy Using Only Three Behavioral Types" (with Ziv Epstein and Dave Rand) <br>
 									<i>Proceedings of the 17th ACM conference on Economics and Computation (EC2016)</i>
 									[<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2737983" target="new">SSRN PDF</a>] </br>
-									<small><i>Summary: We can predict cooperation decisions pretty well using only a small amount of heterogeneity. However, this heterogeneity is not captured by demographics or standard personality psychology variables (eg. the Big 5).</i></small></div>
+									<small><i>Summary: We have people play many dictator games with varying parameters and use machine learning to predict behavior in a game from other games. Willingness to cooperate is heterogeneous, but not very heterogeneous. However, demographics and standard personality psychology variables (eg. the Big 5) are not good predictors of which "type" people are. This is further evidence that "cooperativeness" is a stable dimension on which people differ and is orthogonal to many others that are commonly studied.</i></small></div>
 
-									<div class="paper">"Using Methods from Machine Learning to Evaluate Models of Human Choice Under Uncertainty" (with Jeff Naecker) <br>
+									<div class="paper">"Using methods from machine learning to evaluate models of human choice under uncertainty" (with Jeff Naecker) <br>
 									Forthcoming in <i>Journal of Economic Behavior and Organization</i>
 									[<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2548564" target="new">Working Paper PDF</a>] </br>
-									<small><i>Summary: We compare ML models to economic models of decisions under risk and ambiguity. Economic models do surprisingly well in risk but there is room for improvement in ambiguity. ML can be used as a useful benchmark to see whether there is room for improvement in formal behavioral modeling.</i></small></div>
+									<small><i>Summary: We compare ML models to economic models of decisions under risk and ambiguity. Economic models do surprisingly well at predicting real lottery choices but there is room for improvement in ambiguity. ML can be used as a useful benchmark to see whether there is room for improvement in formal behavioral modeling.</i></small></div>
+
+									<div class="paper">"Recency, Records and Recaps: Learning and Non-equilibrium Behavior in a Simple Decision Problem" (with Drew Fudenberg) </br><i>Proceedings of the 15th ACM conference on Economics and Computation (EC2014)</i>, reprinted in <i>Transactions on Economics and Computation</i> (2016) [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2339862" target="new">Working Paper PDF</a>] [<a href="http://alexpeys.github.io/recaps_appendix.pdf" target="new">Online Supplement</a>] [<a href="http://dl.acm.org/citation.cfm?id=2956581&dl=ACM&coll=DL&CFID=877402939&CFTOKEN=30510879" target="new">Journal Version</a>]</br>
+									<small><i>Summary: Will learning lead individuals to behave optimally? Not always. We show that the human tendency to discount past information (recency bias) can lead to persistent sub-optimal decision-making in a simple game.  Informational interventions or "recaps" can be used to mitigate the worst impacts of the bias.</i></small>
+									</div>
 
 									<h3>2015</h3>
 									<div class="paper">"When Punishment Doesn't Pay: 'Cold Glow' and Decisions to Punish" (with Aurelie Ouss) </br>
@@ -107,11 +125,6 @@ Released   : 20120225
 									<div class="paper">"Habits of Virtue: creating norms of cooperation and defection in the laboratory" (with David Rand) </br> <i>Management Science</i> (2015) [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2294242" target="new">Working Paper PDF</a>] [<a href="http://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2168" target="new">Journal Version</a>] [<a href="http://pubsonline.informs.org/doi/suppl/10.1287/mnsc.2015.2168" target="new">Data and Code</a>] </br>
 									<small><i>Summary: Why are some groups of people more cooperative than others? We argue that people internalize strategies that they learn are successful in their daily social interaction. Thus, interacting in environments where cooperation is advantageous (due to effective “rules of the game”) causes individuals to adopt cooperation as their default behavior more generally. We show these spill-over effects experimentally.</i></small>
 									</div>
-
-									<div class="paper">"Recency, Records and Recaps: Learning and Non-equilibrium Behavior in a Simple Decision Problem" (with Drew Fudenberg) </br><i>Proceedings of EC 2014</i>, to be reprinted in <i>Transactions on Economics and Computation</i> [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2339862" target="new">Revised Version PDF</a>] [<a href="http://alexpeys.github.io/recaps_appendix.pdf" target="new">Online Supplement</a>]</br>
-									<small><i>Summary: People make mistakes. An important question is whether repeated experience with a situation will lead individuals to behave optimally. The human tendency to discount past information (recency bias) can lead to persistent sub-optimal decision-making. WSimple informational interventions or "recaps" can be used to mitigate the worst impacts of the bias.</i></small>
-									</div>
-
 
 									<h3>2014</h3>
 									<div class="paper">"Cooperating with the future" (with Oliver Hauser, David Rand and Martin Nowak) </br><i>Nature</i> (2014) [<a href="http://www.nature.com/nature/journal/vaop/ncurrent/full/nature13530.html"
