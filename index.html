@@ -1,196 +1,225 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--
-Design by Free CSS Templates
-http://www.freecsstemplates.org
-Released for free under a Creative Commons Attribution 2.5 License
-
-Name       : ExtremeSurfing
-Description: A two-column, fixed-width design with dark color scheme.
-Version    : 1.0
-Released   : 20120225
-
--->
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<html>
 <title>Alex Peysakhovich</title>
-<link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css" />
-<link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
-<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
-<script type="text/javascript">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="the_css.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+/* Set the width of the sidebar to 120px */
+.w3-sidebar {width: 120px;background: #222;}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+#main {margin-left: 120px}
+/* Remove margins from "page content" on small screens */
+@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+</style>
+<body class="w3-black">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-34685078-1']);
-  _gaq.push(['_trackPageview']);
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+  <!-- Avatar image in top left corner -->
+  <img src="sidebar.jpg" style="width:100%">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <i class="fa fa-home w3-xxlarge"></i>
+    <p>HOME</p>
+  </a>
 
-</script>
-</head>
-<body>
+  <a href="#info" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <i class="fa fa-user w3-xxlarge"></i>
+    <p>SUMMARY</p>
+  </a>
+  <a href="#research" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <i class="fa fa-search w3-xxlarge"></i>
+    <p>RESEARCH</p>
+  </a>
+  <a href="#pop" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <i class="fa fa-eye w3-xxlarge"></i>
+    <p>POPULAR WRITING</p>
+  </a>
+</nav>
 
-<div id="wrapper">
-	<div id="page">
-		<div id="page-bgtop">
-			<div id="page-bgbtm">
-				<div id="page-content">
-					<div id="header-wrapper">
-						<div id="header">
-							<div id="logo">
-								<h1>Alex Peysakhovich</h1>
-							</div>
-						</div>
-					</div>
-					<!-- end #header -->
-
-					<div id="content">
-						<div class="post">
-							<h2>About Me</h2>
-								<div class="entry">
-
-								<p>Currently, I am a research scientist at Facebook Artificial Intelligence Research. I'm interested in understanding learning and decision-making (human and machine) particularly in social situations. I am also interested in causal inference, experimentation, active learning and causal discovery, which I view as important components for having truly smart decision-makers. 
-								</p>
-
-								<p>I spent 2 years working on Facebook News Feed where I helped started the data science team. We worked on, among other things, advanced experimentation techniques, understanding network effects and improving the way we measure various outcomes. This <a href="http://www.slate.com/articles/technology/cover_story/2016/01/how_facebook_s_news_feed_algorithm_works.html" target=new>Slate piece</a>  does a great job of describing some of our work, including our human evaluator program. This <a href="http://fortune.com/2016/08/04/facebook-algorithm-clickbait/" target=new>Fortune article</a> reports on our work on clickbait detection.</p>
-
-								<p>I'm a huge fan of <a href="https://www.facebook.com/notes/facebook-data-science/data-science-for-social-good/10152669477928859" target=new>data science for civic improvement and social good</a>. Check out a cool <a href="https://seanjtaylor.github.io/out-for-justice/" target=new>project</a> a bunch of us built at a hackathon sponsored by Bayes Impact.</p>
-
-								<p>My work has been published in a number of academic journals and I've written popular press articles for <i>WIRED</i> and <i>New York Times</i>.</p>
-
-								<p>Before Facebook I was a joint post-doc with <a href="http://www.daverand.org" target=new>David Rand</a> at the Human Cooperation Lab (Yale Psychology) and Martin Nowak at the <a href="http://www.ped.fas.harvard.edu" target=new>Program for Evolutionary Dynamics</a> (Harvard Biology). I completed my PhD in Economics at Harvard University under the watchful eyes of <a href="awesomeadvisers.jpg">Al Roth, Drew Fudenberg, David Laibson and Uma Karmarkar.</a></p>
-
-							</div> 
-						</div>
-
-						<div class="post">
-							<h2>Research</h2>
-								<div class="entry">
-
-									<h3>2018</h3>
-									<div class="paper">"Improving pairwise comparison models using Empirical Bayes" (with Stephen Ragain and Johan Ugander)  Under review [Arxiv Coming Soon!]</div>
-
-									<div class="paper">"Maintaining cooperation in complex social dilemmas using deep reinforcement learning" (with Adam Lerer)  Under review [<a href=https://arxiv.org/abs/1707.01068" target="new">Arxiv</a>]</div>
-
-									<div class="paper">"Consequentialist conditional cooperation in social dilemmas with imperfect information" (with Adam Lerer) <i>ICLR 2018</i> [<a href=https://arxiv.org/abs/1707.01068" target="new">Arxiv</a>]
-									</i></small></div>
-
-									<div class="paper">"Learning causal effects from many randomized experiments using regularized instrumental variables" (with Dean Eckles) <i>WWW 2018</i> [<a href='https://arxiv.org/abs/1701.01140' target="new">Arxiv</a>] 
-									</div>
-
-									<div class="paper">"Prosocial learning agents solve generalized Stag Hunts better than selfish ones" (with Adam Lerer) Poster at <i>AAMAS 2018</i> [<a href='https://arxiv.org/abs/1709.02865' target="new">Arxiv</a>] 
-									</div>
-
-									<div class="paper">"In-Group favoritism caused by Pokemon Go and the use of machine learning for principled investigation of potential moderators" (with Dave Rand) (Under review) [<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2908978" target="new">SSRN PDF</a>]
-									</div>
-
-									<h3>2017</h3>
-									<div class="paper">"Multi-Agent Cooperation and the Emergence of (Natural) Language" (with Angeliki Lazaridou and Marco Baroni) <i>ICLR 2017</i> [<a href="https://arxiv.org/abs/1612.07182" target="new">Arxiv</a>]
-									</div>
-
-									<div class="paper">"Using methods from machine learning to evaluate models of human choice under uncertainty" (with Jeff Naecker) <i>Journal of Economic Behavior and Organization (2017)</i>
-									[<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2548564" target="new">Working Paper PDF</a>]
-									</div>
-
-									<div class="paper">"Paying (for) Attention: The Impact of Information Processing Costs on Bayesian Inference" (with Xiaosheng Mu and Scott Kominers) [<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2857978" target="new">Working Paper PDF</a>]
-									</div>
-
-									<div class="paper">"Detecting heterogeneous treatment effects by combining observational and experimental data" (with Akos Lada) [<a href="https://arxiv.org/abs/1611.02385" target="new">Arxiv</a>]
-									</div>
-
-									<h3>2016</h3>
-									<div class="paper">"The Good, the Bad, and the Unflinchingly Selfish: Cooperative Decision-Making Can Be Predicted with High Accuracy Using Only Three Behavioral Types" (with Ziv Epstein and Dave Rand) <i>EC2016</i>
-									[<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2737983" target="new">PDF</a>] 
-									</div>
-
-
-									<div class="paper">"Recency, Records and Recaps: Learning and Non-equilibrium Behavior in a Simple Decision Problem" (with Drew Fudenberg) EC2014)</i> reprinted in "Best of EC" <i>Transactions on Economics and Computation (2016)</i>  [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2339862" target="new">Working Paper PDF</a>] [<a href="http://alexpeys.github.io/recaps_appendix.pdf" target="new">Online Supplement</a>] [<a href="http://dl.acm.org/citation.cfm?id=2956581&dl=ACM&coll=DL&CFID=877402939&CFTOKEN=30510879" target="new">Journal Version</a>]</br>
-									</div>
-
-									<h3>2015</h3>
-									<div class="paper">"When Punishment Doesn't Pay: 'Cold Glow' and Decisions to Punish" (with Aurelie Ouss) 
-									<i>Journal of Law and Economics (2015) </i> [<a href="http://ssrn.com/abstract=2247446" target="new">Working Paper PDF</a>]
-									</div>
-
-									<div class="paper">"Asymmetric Impacts of Favorable and Unfavorable Information on Decisions Under Ambiguity" (with Uma Karmarkar) 
-									<i>Management Science (2015) </i>  [<a href="http://www.hbs.edu/faculty/Publication%20Files/AmbigMainTextFinal_8a88b410-0618-40ea-969a-c29f3e509d9d.pdf" target="new">Working Paper PDF</a>] [<a href="http://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2233" target="new">Journal Version</a>] [<a href="http://pubsonline.informs.org/doi/suppl/10.1287/mnsc.2015.2233" target="new">Data and Code</a>]
-									</div>
-
-									<div class="paper">"Habits of Virtue: creating norms of cooperation and defection in the laboratory" (with David Rand) <i>Management Science (2015) </i> [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2294242" target="new">Working Paper PDF</a>] [<a href="http://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2168" target="new">Journal Version</a>] [<a href="http://pubsonline.informs.org/doi/suppl/10.1287/mnsc.2015.2168" target="new">Data and Code</a>] </br>
-									</div>
-
-									<h3>2014</h3>
-									<div class="paper">"Cooperating with the future" (with Oliver Hauser, David Rand and Martin Nowak) <i>Nature</i> (2014) [<a href="http://www.nature.com/nature/journal/vaop/ncurrent/full/nature13530.html"
-									target="new">Published Version</a>] [<a href="http://davidrand-cooperation.com/s/Hauser_et_al_data_and_code.zip"
-									target="new">Data and Code</a>] 
-									<br> Nature video summary available <a href="http://www.youtube.com/watch?v=xrXyRJV96mk&feature=youtu.be" target=_new>here</a> (it's good)</br>
-									</div>
-
-									<div class="paper">"Humans display a 'cooperative phenotype' that is domain general and temporally stable" (with Martin Nowak and David Rand) <i>Nature Communications (2014) </i> [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2426473" target="new">Working Paper PDF</a>] [<a href="http://www.nature.com/ncomms/2014/140916/ncomms5939/full/ncomms5939.html" target="new">Journal Version</a>] [<a href="https://daverand.squarespace.com/s/peysakhovich_2014_data_and_code.zip" target="new">Data and Code</a>]
-									</div>
-
-									<div class="paper">"Why We Cooperate" (with Jillian Jordan and David Rand)
-									<i>Jean Decety & Thalia Wheatley (eds.) “The Moral Brain: Multidisciplinary Perspectives”</i> (2014) [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2418439" target="new">Working Paper PDF</a>]
-									</div>
-
-									<div class="paper">"Social Heuristics Shape Intuitive Cooperation" (with David Rand, Gordon Kraft-Todd, George Newman, Owen Wurzbacher, Martin Nowak and Joshua Greene) <i>Nature Communications (2014)</i>  [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2222683" target="new">Working Paper PDF</a>] [<a href="http://www.nature.com/ncomms/2014/140422/ncomms4677/abs/ncomms4677.html" target="new">Journal Version</a>] [<a href="http://davidrand-cooperation.com/s/Rand_et_al_2014_Nature_Comm_data_and_code.zip" target="new">Data and Code</a>]
-									</div>
-
-									<div class="paper">"How to Commit (If You Must): Commitment Contracts and the Dual-Self Model" </br><i>Journal of Economic Behavior and Organization (2014) </i>  [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2444434" target="new">Working Paper PDF</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0167268114000365" target="new">Journal Version</a>]
-									</div>
-
-									<h3>2012</h3>
-									<div class="paper"> "A Note on Proper Scoring Rules and Risk Aversion" (with Mikkel Plagborg-Moller) <i>Economics Letters (2012) </i> [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2019078" target="new">Ungated Working Paper</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0165176512002984" target="new">Journal Version</a>]
-									</div>
-
-							</div>
-						</div>
-
-						<div class="post">
-							<h2>Popular Press</h2>
-								<div class="entry">
-
-									<div class="paper"> "How Not To Drown In Numbers" (with Seth Stephens-Davidowitz) </br> <i>New York Times Op-Ed</i> [<a href="http://www.nytimes.com/2015/05/03/opinion/sunday/how-not-to-drown-in-numbers.html">Web</a>]
-									</div>
-
-									<div class="paper"> "Games Head to the Lab" (with David Rand) </br> <i>WIRED UK "The World in 2014"</i> [<a href="https://daverand.squarespace.com/s/games-head-to-the-lab-rand-peysakhovich-wired.pdf">PDF</a>]
-									</div>
-
-									<div class="paper"> "Small is Good When It Comes to Data Creation" (with David Rand) </br> <i>WIRED UK "The World in 2013"</i>
-									[<a href="http://davidrand-cooperation.com/s/small-is-good-when-it-comes-to-data-creation.pdf">PDF</a>]
-									</div>
-
-							</div>
-						</div>
-					</div>
-					<!-- end #content -->
-					<div id="sidebar">
-						<ul>
-							<img src="webpic2-lo.jpg" width="300px">
-							<li>
-								<h2>More Information</h2>
-								<p>alex.peys (squiggly) gmail.com </br> <a href="https://twitter.com/alex_peys" target="_new">@alex_peys (Twitter)</a> </br> <a href="https://www.facebook.com/itsamealex" target="_new">My Facebook Page </a> </br>
-								</p>
-							</li>
-						</ul>
-
-					</div>
-					<!-- end #sidebar -->
-				</div>
-				<div style="clear: both;">&nbsp;</div>
-			</div>
-		</div>
-	</div>
-	<!-- end #page -->
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="#" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
+    <a href="#info" class="w3-bar-item w3-button" style="width:25% !important">SUMMARY</a>
+    <a href="#research" class="w3-bar-item w3-button" style="width:25% !important">RESEARCH</a>
+    <a href="#pop" class="w3-bar-item w3-button" style="width:25% !important">POP SCI</a>
+  </div>
 </div>
-<div id="footer">
-	<p>Design based on a template by <a href="http://www.freecsstemplates.org/" target="new">FCT</a>.</p>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <img src="photo.jpg" alt="alex" class="w3-image" width="600"> <br>
+      <h1 class="w3-jumbo"><span class="w3-hide-small"></span>Alex Peysakhovich</h1>
+    <a href='peysakhovichresume.pdf' target='new'><button class="w3-button w3-light-grey w3-padding-large w3-section">
+      <i class="fa fa-download"></i> Professional (Short) Resume
+    </button></a>
+
+    <a href='peysakhovich_academiccv.pdf' target='new'><button class="w3-button w3-light-grey w3-padding-large w3-section">
+      <i class="fa fa-download"></i> Academic (Longer) CV
+    </button></a>
+     <br>
+      Interests: game theory, AI, behavioral economics, market design, applied machine learning, data science
+    <br>
+    alex.peys (at) gmail.com // <i class="fa fa-twitter w3-hover-opacity"></i><a href='https://twitter.com/alex_peys' target='new'>alex_peys</a> // <a href='https://scholar.google.com/citations?user=zwLePrsAAAAJ&hl=en&oi=ao' target='new'>Google Scholar</a>
+
+  </header>
+
+  <!-- About Section -->
+  <div class="w3-content w3-justify w3-text-light-grey w3-padding-64" id="info">
+    <h2 class="w3-text-light-grey">Summary</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>I am a senior research scientist at Facebook Artificial Intelligence research. My work includes both basic and applied research at the intersection of behavioral science, economics, game theory, and artificial intelligence. I hold a PhD in Behavioral Economics from Harvard.</p>
+
+    <p>My recent research involves exporting insights from behavioral economics and mechanism design to the <b>design of smart artificial agents</b>. I am also interested in trade going the other way: <b>constructing new machine learning tools</b> to improve the way we do behavioral/social science and market design. See my publication list (below) for more details.</p>
+
+    <p>At Facebook I have worked on many machine learning/data science projects including <b>detecting clickbait</b>, building <b>large scale embedding systems</b>, implementing <b>advanced experimentation techniques</b>, understanding network effects, and improving the way we measure hard to measure outcomes.  <a href='https://newsroom.fb.com/news/2016/08/news-feed-fyi-further-reducing-clickbait-in-feed/' target='new'>Changes to Facebook</a> resulting from some of these projects have been significant enough to appear in the popular press (<a href='http://www.slate.com/articles/technology/cover_story/2016/01/how_facebook_s_news_feed_algorithm_works.html'>Slate</a>, <a href="http://www.nytimes.com/2015/05/03/opinion/sunday/how-not-to-drown-in-numbers.html">NYT</a>, <a href='https://www.forbes.com/sites/kathleenchaykowski/2016/08/04/facebook-cracks-down-on-news-feed-clickbait/'>Forbes</a>). See my professional resume for more details.</p>
+
+    <p>I have found that applied product work is actually a neat way to find good basic research questions. <a href='https://arxiv.org/abs/1701.01140' target='new'>These</a> <a href='https://arxiv.org/pdf/1807.09236.pdf' target='new'>three</a> <a href='https://arxiv.org/abs/1611.02385'>papers</a> are great examples.</p>
+
+    <p>I was once <a href='https://psmag.com/magazine/alexander-peysakhovich-30-under-30'>profiled in Pacific Standard</a>. The article makes me seem much more interesting than I am.</p>
+
+    <p>I also like photography (mostly film). Check out my <i class="fa fa-instagram w3-hover-opacity">: alexpeys </i> </p>
+
+  
+  <div class="w3-padding-64 w3-content" id="research">
+    <h2 class="w3-text-light-grey">Academic Research</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <h3 class="w3-text-light-grey">Work in Progress</h3>
+    <p>"Maintaining cooperation in complex social dilemmas using deep reinforcement learning" (with Adam Lerer)<br>
+    [Under review] [<a href='https://arxiv.org/pdf/1707.01068.pdf' target='new'>pdf</a>]</p>
+
+    <p>"Learning existing social conventions in Markov games" (with Adam Lerer)<br>
+    [Under review] [<a href='https://arxiv.org/pdf/1806.10071.pdf' target='new'>pdf</a>]</p>
+
+    <p>"In-Group favoritism caused by Pokemon Go and the use of machine learning for principled investigation of potential moderators" (with David Rand)<br>
+    [Revise and Resubmit <i>Nature Scientific Reports</i>] [<a href='https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2908978' target='new'>pdf</a>]</p>
+
+    <p>"Improving pairwise comparison models using Empirical Bayes" (with Stephen Ragain, Johan Ugander)<br>
+    [Under review] [<a href='https://arxiv.org/pdf/1807.09236.pdf' target='new'>pdf</a>]</p>
+
+    <p>"Backplay: 'Man Muss Immer Umkeheren'" (with Cinjon Resnick, Roberta Raileanu, Sanyan Kapoor, Kyunghyun Cho, Joan Bruna)<br>
+    [Under review] [<a href='https://arxiv.org/pdf/1807.06919.pdf' target='new'>pdf</a>]</p>
+
+    <p>"Paying (for) Attention: The Impact of Information Processing Costs on Bayesian Inference" (with Xiaosheng Mu, Scott Kominers)<br>
+    [Under review] [<a href='https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2857978' target='new'>pdf</a>]</p>
+
+    <h3 class="w3-text-light-grey">2018 Publications</h3>
+    <p>"Prosocial learning agents solve generalized Stag Hunts better than selfish ones" (with Adam Lerer)<br>
+    [AAMAS2018] [<a href='https://arxiv.org/abs/1709.02865' target='new'>pdf</a>]</p>
+
+    <p>"Consequentialist conditional cooperation in social dilemmas with imperfect information" (with Adam Lerer)<br>
+    [ICLR2018] [<a href='https://arxiv.org/abs/1707.01068' target='new'>pdf</a>]</p>
+
+    <p>"Learning causal effects from many randomized experiments using regularized instrumental variables" (with Dean Eckles)<br>
+    [WWW2018] [<a href='https://arxiv.org/abs/1701.01140' target='new'>pdf</a>]</p>
+
+    <p>"Towards AI that can solve social dilemmas" (with Adam Lerer)<br>
+    [AAAI2018 Spring Symposium Series] [<a href='https://www.aaai.org/Symposia/Spring/sss18symposia.php' target='new'>Proceedings</a>]</p>
+
+
+    <h3>2017 Publications</h3>
+    <p>Multi-Agent Cooperation and the Emergence of (Natural) Language" (with Angeliki Lazaridou and Marco Baroni) <br>
+    [ICLR2017] [<a href="https://arxiv.org/abs/1612.07182" target="new">pdf</a>] </p>
+
+    <p>"Using methods from machine learning to evaluate models of human choice under uncertainty" (with Jeff Naecker) <br>
+    [Journal of Economic Behavior and Organization] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2548564" target="new">pdf</a>]
+    </p>
+
+    <p>"Detecting heterogeneous treatment effects by combining observational and experimental data" (with Akos Lada) <br>
+    [CODE@MIT] [<a href="https://arxiv.org/abs/1611.02385" target="new">pdf</a>]
+    </p>
+    
+    <h3>2016 Publications</h3>
+    <p>"The Good, the Bad, and the Unflinchingly Selfish: Cooperative Decision-Making Can Be Predicted with High Accuracy Using Only Three Behavioral Types" (with Ziv Epstein and Dave Rand) <br>
+    [EC2016] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2737983" target="new">pdf</a>] 
+    </p>
+
+    <p>"Recency, Records and Recaps: Learning and Non-equilibrium Behavior in a Simple Decision Problem" (with Drew Fudenberg) <br>
+    [EC2014, Transactions on Economics and Computation 2016] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2339862" target="new">pdf</a>] </br>
+    </p>
+
+    <h3>2015 Publications</h3>
+    <p>"When Punishment Doesn't Pay: 'Cold Glow' and Decisions to Punish" (with Aurelie Ouss) <br>
+    [Journal of Law and Economics] [<a href="http://ssrn.com/abstract=2247446" target="new">pdf</a>]
+    </p>
+
+    <p>"Asymmetric Impacts of Favorable and Unfavorable Information on Decisions Under Ambiguity" (with Uma Karmarkar) <br>
+    [Management Science] [<a href="http://www.hbs.edu/faculty/Publication%20Files/AmbigMainTextFinal_8a88b410-0618-40ea-969a-c29f3e509d9d.pdf" target="new">pdf</a>] [<a href="http://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2233" target="new">Journal Version</a>] [<a href="http://pubsonline.informs.org/doi/suppl/10.1287/mnsc.2015.2233" target="new">Data and Code</a>]
+    </p>
+
+    <p>"Habits of Virtue: creating norms of cooperation and defection in the laboratory" (with David Rand) <br>
+    [Management Science] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2294242" target="new">pdf</a>] [<a href="http://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2168" target="new">Journal Version</a>] [<a href="http://pubsonline.informs.org/doi/suppl/10.1287/mnsc.2015.2168" target="new">Data and Code</a>]
+    </p>
+
+    <h3>2014 Publications</h3>
+    <p>"Cooperating with the future" (with Oliver Hauser, David Rand and Martin Nowak)
+    [Nature] [<a href="http://www.nature.com/nature/journal/vaop/ncurrent/full/nature13530.html"
+    target="new">Published Version</a>] [<a href="http://davidrand-cooperation.com/s/Hauser_et_al_data_and_code.zip"
+    target="new">Data and Code</a>] [<a href="http://www.youtube.com/watch?v=xrXyRJV96mk&feature=youtu.be" target=_new>Nature video summary</a>]
+    </p>
+
+    <p>"Humans display a 'cooperative phenotype' that is domain general and temporally stable" (with Martin Nowak and David Rand) <br>
+    [Nature Comms] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2426473" target="new">pdf</a>] [<a href="http://www.nature.com/ncomms/2014/140916/ncomms5939/full/ncomms5939.html" target="new">Journal Version</a>] [<a href="https://daverand.squarespace.com/s/peysakhovich_2014_data_and_code.zip" target="new">Data and Code</a>]
+    </p>
+
+    <p>"Why We Cooperate" (with Jillian Jordan and David Rand) <br>
+    [Chapter in “The Moral Brain: Multidisciplinary Perspectives”] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2418439" target="new">pdf</a>]
+    </p>
+
+    <p>"Social Heuristics Shape Intuitive Cooperation" (with David Rand, Gordon Kraft-Todd, George Newman, Owen Wurzbacher, Martin Nowak and Joshua Greene) <br>
+    [Nature Comms] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2222683" target="new">pdf</a>] [<a href="http://www.nature.com/ncomms/2014/140422/ncomms4677/abs/ncomms4677.html" target="new">Journal Version</a>] [<a href="http://davidrand-cooperation.com/s/Rand_et_al_2014_Nature_Comm_data_and_code.zip" target="new">Data and Code</a>]
+    </p>
+
+    <p>"How to Commit (If You Must): Commitment Contracts and the Dual-Self Model" <br>
+    [Journal of Economic Behavior and Organization] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2444434" target="new">pdf</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0167268114000365" target="new">Journal Version</a>]
+    </p>
+
+    <h3>2012 Publications</h3>
+    <p>"A Note on Proper Scoring Rules and Risk Aversion" (with Mikkel Plagborg-Moller) <br>
+    [Economics Letters] [<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2019078" target="new">pdf</a>] [<a href="http://www.sciencedirect.com/science/article/pii/S0165176512002984" target="new">Journal Version</a>]
+    </p>
+  </div>
+
+  <div class="w3-padding-64 w3-content" id="pop">
+    <h2 class="w3-text-light-grey">Popular Writing</h2>
+    <hr style="width:200px" class="w3-opacity">
+        <p> "How Not To Drown In Numbers" (with Seth Stephens-Davidowitz) </br> 
+        [New York Times Op-Ed] [<a href="http://www.nytimes.com/2015/05/03/opinion/sunday/how-not-to-drown-in-numbers.html">Web</a>]
+        </p>
+
+        <p> "Games Head to the Lab" (with David Rand) </br> 
+        [WIRED UK "The World in 2014"][<a href="https://daverand.squarespace.com/s/games-head-to-the-lab-rand-peysakhovich-wired.pdf">pdf</a>]
+        </p>
+
+        <p> "Small is Good When It Comes to Data Creation" (with David Rand) </br> 
+        [WIRED UK "The World in 2013"] [<a href="http://davidrand-cooperation.com/s/small-is-good-when-it-comes-to-data-creation.pdf">pdf</a>]
+        </p>
+        
+    </div>
+
+    
+  </div>
+  
+
+
+    <p>Website powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  </div>
+
+
+  </div>
+    
+
+<!-- END PAGE CONTENT -->
 </div>
-<!-- end #footer -->
+
+
 </body>
 </html>
