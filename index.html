@@ -1,84 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Alex Peysakhovich</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Open Sans', sans-serif;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 600;
-        }
-        .max-width-lg {
-            max-width: 960px;
-        }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <div class="container max-width-lg my-5">
-        <div class="row">
-            <div class="col-md-4 text-center">
-                <img src="photo_with_dog2.jpeg" alt="Researcher Photo" class="img-fluid rounded-circle">
-                <div class="caption small mt-1">Training a small reinforcement learning model.</div>
-
-            </div>
-            <div class="col-md-8">
-                 <h2 class="mb-0">Alexander Peysakhovich</h2>
-                <p>Currently I am a Researcher in Residence (Chief Matrix Multiplier?) at Sutter Hill Ventures.</p>
-
-                <p>Before this I was a Research Scientist at Meta AI Research (aka. FAIR) working on AI/machine learning. Before that I was the technical lead of the Facebook "Feed Science" team. Before that I got my PhD in Behavioral Economics from Harvard.</p>
-
-                <p>I have done research on a bunch of different topics (mostly because I am lucky to have lots of smart co-authors). I also really like to use machine learning to build useful things. Here I will list some highlights. Please use the links below to see my full publication list.</p>
-
-                <p>You can reach me at alex (dot) peys (at) gmail.com</p>
-                <a href="2023Mar_PeysCV.pdf" target="_blank" class="btn btn-primary mr-3">CV</a>
-                <a href="https://scholar.google.com/citations?user=zwLePrsAAAAJ&hl=en&oi=ao" target="_blank" class="btn btn-primary mr-3">Google Scholar</a>
-
-                <a href="https://twitter.com/alex_peys" target="_blank" class="btn btn-primary">Twitter</a>
-
-            </div>
-        </div>
-    </div>
-
-   <div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-auto">
-            <div class="row">
-                <div class="col-md-6 pr-md-4">
-                    <h4>Basic Research Interests</h4>
-                    <ul>
-                        <li>Working with graph structured data</li>
-                        <li>AI agents that can cooperate with new partners</li>
-                        <li>Causality</li>
-                        <li>Economics and machine learning</li>
-                        <li>Learning about human preferences</li>
-                        <li>Reinforcement learning</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 pl-md-4">
-                    <h4>Applied ML Projects</h4>
-                    <ul>
-                        <li><a href='https://github.com/facebookresearch/PyTorch-BigGraph' target='_blank'>PyTorch Big Graph</a></li>
-                        <li><a href='https://about.fb.com/news/2016/08/news-feed-fyi-further-reducing-clickbait-in-feed/' target='_blank'>Detecting clickbait on Facebook</a></li>
-                        <li><a href='https://time.com/collection-post/3950525/facebook-news-feed-algorithm/' target='_blank'>Incorporating preferences into FB News Feed</a></li>
-                        <li><a href='https://dl.acm.org/doi/pdf/10.1145/3178876.3186151' target='_blank'>Making randomized experiments work better</a></li>
-                        <li><a href='https://arxiv.org/pdf/2303.07342.pdf' target='_blank'>Machine learning and medicine</a></li>
-
-                    </ul>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexander Peysakhovich - Researcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <h1 class="name">Alexander Peysakhovich</h1>
+        <section id="about">
+            <div class="about-content">
+                <img src="profile_photo1.jpeg" alt="Alexander Peysakhovich" class="profile-img" id="profile-img">
+                <div class="about-text">
+                    <p>Currently I am a Researcher in Residence (Chief Matrix Multiplier) at Sutter Hill Ventures. I help our portfolio companies prepare their AI strategies, help them build out production systems, and prototype new ideas.</p>
+                    <p>Before this I was a Research Scientist at Meta FAIR working on machine learning. Before that I was the technical lead of the Facebook "Feed Science" team where we built, rolled out, and analyzed various machine learning improvements to News Feed. Before studying AI, I worked on human cognition. I got my PhD in Behavioral Economics from Harvard.</p>
+                    <p>You can reach me at alex (dot) peys (at) gmail.com</p>
+                    <div class="buttons">
+                        <a href="https://scholar.google.com/citations?user=zwLePrsAAAAJ&hl=en&oi=ao" target="_blank" class="btn">Google Scholar</a>
+                        <a href="https://x.com/alex_peys" target="_blank" class="btn">Twitter</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <section id="research">
+            <h2>Research Interests</h2>
+            <p>I have worked on many different machine learning and related topics. Below I list some current areas of interest with links to representative publications. For a full list of publications see <a href="https://scholar.google.com/citations?user=zwLePrsAAAAJ&hl=en&oi=ao">Google scholar</a>.</p>
+            <ul>
+                <li><span class="research-topic">Multimodal models</span> - using text and image as both inputs and outputs of large models <a href="https://arxiv.org/abs/2406.18790" class="paper-link" data-paper-title="MUMU: Bootstrapping Multimodal Image Generation from Text-to-Image Data" data-paper-abstract="We build an image generation model that can take interleaved image and text prompts (e.g. 'a man <picture of man> and his dog <picture of dog> in a cartoon style <image of the style>'). We do this by using a VLM as an encoder and a diffusion model as decoder.">[1]</a></li>
+                <li><span class="research-topic">Embeddings and retrieval</span> - graph-based learning, retrieval augmented generation, and non-Euclidean embeddings <a href="https://arxiv.org/abs/1903.12287" class="paper-link" data-paper-title="PyTorch-BigGraph: A Large-scale Graph Embedding System" data-paper-abstract="We scale graph embedding to graphs with trillions of edges and billions of nodes. The system is open sourced and used extensively at Facebook/Instagram as well as other large companies.">[1]</a>, <a href="https://arxiv.org/abs/2106.09671" class="paper-link" data-paper-title="Pseudo-Euclidean Attract-Repel Embeddings for Undirected Graphs" data-paper-abstract="Standard dot product embeddings are very good for modeling graphs with homophily (similar nodes connect) but fail when applied to graphs with heterophily (edges form between nodes of different types). We show a theory why this is and produce a pseudo-Euclidean embedding model which fixes this issue and nests the Euclidean and the Riemannian models.">[2]</a></li>
+                <li><span class="research-topic">Multiagent environments</span> - building artificial agents that know how to coordinate, communicate, and cooperate with others <a href="https://arxiv.org/abs/1612.07182" class="paper-link" data-paper-title="Multi-Agent Cooperation and the Emergence of (Natural) Language" data-paper-abstract="We build agents that learn a language from having to figure out which object the other agent is trying to point at.">[1]</a>, <a href="https://arxiv.org/abs/1707.01068" class="paper-link" data-paper-title="Maintaining cooperation in complex social dilemmas using deep reinforcement learning" data-paper-abstract="We use deep RL to build agents that can figure out if another agent is trying to cooperate with them or cheat them and respond accordingly.">[2]</a>, <a href="https://arxiv.org/abs/1806.10071" class="paper-link" data-paper-title="Learning Existing Social Conventions via Observationally Augmented Self-Play" data-paper-abstract="We build learning agents that can learn to coordinate with others in a novel environment. For example, agents that can follow local driving norms.">[3]</a></li>
+                <li><span class="research-topic">Machine Learning and Causality</span> - applications to complicated environments like advertising markets, large scale A/B testing, or medicine <a href="https://arxiv.org/abs/1901.06230" class="paper-link" data-paper-title="Computing large market equilibria using abstractions" data-paper-abstract="We show how to compute approximate market equilibria for markets that are too large to be solved directly by making an 'abstraction' of the market which is simpler.">[1]</a>, <a href="https://arxiv.org/abs/1701.01140" class="paper-link" data-paper-title="Learning causal effects from many randomized experiments using regularized instrumental variables" data-paper-abstract="Companies run many A/B tests but analyze them individually. We show how to put big collections of A/B tests together to learn new causal paths.">[2]</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <div id="paper-preview" class="paper-preview">
+        <h3 id="preview-title"></h3>
+        <p id="preview-abstract"></p>
     </div>
-</div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const paperLinks = document.querySelectorAll('.paper-link');
+            const paperPreview = document.getElementById('paper-preview');
+            const previewTitle = document.getElementById('preview-title');
+            const previewAbstract = document.getElementById('preview-abstract');
 
+            paperLinks.forEach(link => {
+                const title = link.getAttribute('data-paper-title');
+                const abstract = link.getAttribute('data-paper-abstract');
 
+                link.addEventListener('mouseover', (e) => {
+                    previewTitle.textContent = title;
+                    previewAbstract.textContent = abstract;
+                    
+                    const rect = link.getBoundingClientRect();
+                    const previewHeight = paperPreview.offsetHeight;
 
-</div>
+                    // Set display to 'block' before calculating height
+                    paperPreview.style.display = 'block';
+                    
+                    // Recalculate previewHeight after making it visible
+                    const updatedPreviewHeight = paperPreview.offsetHeight;
+
+                    let top = rect.top - updatedPreviewHeight - 10; // Position above the link with a 10px gap
+
+                    // Check if the preview would go off the top of the viewport
+                    if (top < 0) {
+                        top = rect.bottom + 10; // If not enough space above, position below with a 10px gap
+                    }
+
+                    paperPreview.style.left = `${rect.left}px`;
+                    paperPreview.style.top = `${top}px`;
+                });
+
+                link.addEventListener('mouseout', () => {
+                    paperPreview.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
