@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>25:01 @ Thunderhill — Live Pace Board</title>
+<style>
+  :root {
+    --bg:#0b0d10; --panel:#14171c; --row:#1a1e25; --row2:#161a20;
+    --text:#e8ecf1; --dim:#8a93a3; --accent:#ffd400; --hi:#ff4d4d; --good:#4ade80;
+    --border:#262b33;
+  }
+  html,body { background:var(--bg); color:var(--text); margin:0; font:14px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  h1 { font-size:18px; margin:0; font-weight:600; letter-spacing:.02em; }
+  h2 { font-size:14px; margin:18px 0 6px; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
+  .wrap { max-width:1400px; margin:0 auto; padding:18px 18px 60px; }
+  .head { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .meta { display:flex; gap:18px; flex-wrap:wrap; color:var(--dim); font-size:13px; }
+  .meta b { color:var(--text); font-weight:600; }
+  .flag { display:inline-block; padding:2px 8px; border-radius:4px; font-weight:600; font-size:12px; text-transform:uppercase; }
+  .flag.green { background:#0f3d1a; color:#5fe089; }
+  .flag.yellow { background:#3a2d05; color:#ffd54f; }
+  .flag.red { background:#3a0808; color:#ff7a7a; }
+  .flag.other { background:#222; color:#bbb; }
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; margin-top:14px; }
+  table { width:100%; border-collapse:collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding:6px 9px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+  th { background:#10131a; color:var(--dim); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em; position:sticky; top:0; }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  tr.tc { background:rgba(255,212,0,.08); }
+  tr.tc td { border-bottom-color:rgba(255,212,0,.25); }
+  tr:nth-child(even) { background:var(--row2); }
+  tr:nth-child(even).tc { background:rgba(255,212,0,.10); }
+  tr:hover { background:#202632; }
+  .small { font-size:12px; color:var(--dim); }
+  .controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  input[type=text] { background:#0c0f14; color:var(--text); border:1px solid var(--border); border-radius:5px; padding:5px 8px; font:inherit; min-width:220px; }
+  button { background:#1f2530; color:var(--text); border:1px solid var(--border); border-radius:5px; padding:5px 10px; font:inherit; cursor:pointer; }
+  button:hover { background:#262e3c; }
+  .projection th, .projection td { text-align:right; }
+  .projection th:nth-child(2), .projection td:nth-child(2) { text-align:left; }
+  .delta-current { color:var(--accent); font-weight:600; }
+  .gain { color:var(--good); }
+  .scroll { max-height:75vh; overflow:auto; border:1px solid var(--border); border-radius:8px; }
+  .badge { font-size:11px; padding:1px 6px; border-radius:3px; background:#222; color:var(--dim); margin-left:6px; }
+  .err { color:#ff7a7a; }
+  .ok { color:#5fe089; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>25:01 @ Thunderhill — Live Pace Board <span class="badge" id="status">connecting…</span></h1>
+    <div class="meta">
+      <span><b id="raceName">—</b></span>
+      <span>flag <span id="flag" class="flag other">—</span></span>
+      <span>elapsed <b id="elapsed">—</b></span>
+      <span>remaining <b id="remaining">—</b></span>
+      <span><span id="numTeams">0</span> teams</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0">Projection — <span id="projTeamName">Third Coast Racing</span></h2>
+    <div id="projWrap"><span class="small">waiting for data…</span></div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0">Who we're racing — top 10 closest in class</h2>
+    <div id="rivalsWrap"><span class="small">waiting for data…</span></div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0">All teams</h2>
+    <div class="scroll">
+      <table id="board">
+        <thead>
+          <tr>
+            <th class="num">P</th>
+            <th class="num">CP</th>
+            <th class="num">#</th>
+            <th>Team</th>
+            <th>Class</th>
+            <th>Car</th>
+            <th class="num">Laps</th>
+            <th class="num">Total Time</th>
+            <th class="num">Avg Pace</th>
+            <th class="num">Last Lap</th>
+            <th class="num">Best Lap</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="small" style="margin-top:18px; color:var(--dim)">
+    Data: <a href="https://www.race-monitor.com/Live/Race/165684" style="color:var(--dim)">Race-Monitor live timing</a>.
+    Avg pace = total time / laps. Projections assume the same pace delta over the elapsed race so far; rank is your projected lap count vs. every other team's current lap count.
+  </div>
+</div>
+
+<script>
+const RACE_ID = 165684;
+const WEB_RACE_LIST =
+  `https://api.race-monitor.com/Info/WebRaceList?accountID=&seriesID=&raceID=${RACE_ID}&styleID=`;
+
+// -------- state ---------
+const state = {
+  raceName: "",
+  flag: "",
+  elapsed: "",
+  remaining: "",
+  elapsedSec: 0,
+  classes: {},        // classID -> name
+  competitors: {},    // racerID -> comp
+  connected: false,
+  lastRender: 0,
+};
+
+const TARGET_MATCH = "third coast";
+
+// -------- RMonitor parser ---------
+function splitCSV(line) {
+  // RMonitor lines: comma-delimited, fields optionally double-quoted, may contain commas inside quotes.
+  const out = [];
+  let cur = "";
+  let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQ) {
+      if (ch === '"') {
+        if (line[i+1] === '"') { cur += '"'; i++; }
+        else inQ = false;
+      } else cur += ch;
+    } else {
+      if (ch === ',') { out.push(cur); cur = ""; }
+      else if (ch === '"' && cur === "") inQ = true;
+      else cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+function parseHMS(s) {
+  if (!s) return 0;
+  s = String(s).trim();
+  if (!s) return 0;
+  const p = s.split(":");
+  try {
+    if (p.length === 3) return (+p[0])*3600 + (+p[1])*60 + parseFloat(p[2]);
+    if (p.length === 2) return (+p[0])*60 + parseFloat(p[1]);
+    return parseFloat(s) || 0;
+  } catch { return 0; }
+}
+
+function fmtHMS(sec) {
+  if (!isFinite(sec) || sec <= 0) return "—";
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,"0")}:${s.toFixed(0).padStart(2,"0")}`;
+  return `${m}:${s.toFixed(3).padStart(6,"0")}`;
+}
+
+function fmtLap(sec) {
+  if (!isFinite(sec) || sec <= 0) return "—";
+  const m = Math.floor(sec / 60);
+  const s = sec - m*60;
+  return `${m}:${s.toFixed(3).padStart(6,"0")}`;
+}
+
+function ensureComp(rid) {
+  let c = state.competitors[rid];
+  if (!c) {
+    c = { racerID:rid, number:rid, name:"", car:"", classID:"", className:"",
+          position:null, laps:0, totalTimeSec:0, lastLapSec:0,
+          bestLapSec:0, bestLapNum:0 };
+    state.competitors[rid] = c;
+  }
+  return c;
+}
+
+function applyMessage(line) {
+  line = line.replace(/\r/g,"");
+  if (!line.startsWith("$")) return;
+  const f = splitCSV(line);
+  const head = f[0];
+
+  if (head === "$B") {
+    state.raceName = f[2] || state.raceName;
+  } else if (head === "$C") {
+    state.classes[String(f[1])] = f[2] || "";
+  } else if (head === "$A") {
+    // $A,"racerID","number",transponder,"first","last","nat",classID
+    if (f.length >= 8) {
+      const rid = String(f[1]);
+      const c = ensureComp(rid);
+      c.number = f[2];
+      const first = f[4] || "", last = f[5] || "";
+      const name = (first + " " + last).trim();
+      if (name) c.name = name;
+      c.classID = String(f[7]);
+    }
+  } else if (head === "$COMP") {
+    // $COMP,"racerID","number",classID,"","name","","car"
+    if (f.length >= 8) {
+      const rid = String(f[1]);
+      const c = ensureComp(rid);
+      c.number = f[2];
+      c.classID = String(f[3]);
+      if (f[5]) c.name = f[5];
+      c.car = f[7] || "";
+    }
+  } else if (head === "$G") {
+    // $G,position,"racerID",laps,"totalTime"
+    if (f.length >= 5) {
+      const rid = String(f[2]);
+      const c = ensureComp(rid);
+      const pos = parseInt(f[1], 10);
+      c.position = isFinite(pos) ? pos : null;
+      const laps = parseInt(f[3], 10);
+      c.laps = isFinite(laps) ? laps : 0;
+      c.totalTimeSec = parseHMS(f[4]);
+    }
+  } else if (head === "$H") {
+    // $H,bestPos,"racerID",bestLap,"bestTime"
+    if (f.length >= 5) {
+      const rid = String(f[2]);
+      const c = ensureComp(rid);
+      const bl = parseInt(f[3], 10);
+      c.bestLapNum = isFinite(bl) ? bl : 0;
+      c.bestLapSec = parseHMS(f[4]);
+    }
+  } else if (head === "$J") {
+    // $J,"racerID","lastLap","totalTime"
+    if (f.length >= 4) {
+      const rid = String(f[1]);
+      const c = ensureComp(rid);
+      c.lastLapSec = parseHMS(f[2]);
+      c.totalTimeSec = parseHMS(f[3]);
+    }
+  } else if (head === "$F") {
+    // $F,lapsToGo,"timeRemaining","timeOfDay","raceElapsed","flag"
+    if (f.length >= 6) {
+      state.remaining = f[2];
+      state.wall = f[3];
+      state.elapsed   = f[4];
+      state.elapsedSec = parseHMS(f[4]);
+      state.flag = (f[5] || "").trim();
+    }
+  }
+}
+
+// -------- connect ---------
+async function connect() {
+  setStatus("fetching connection info…", false);
+  let info;
+  try {
+    const r = await fetch(WEB_RACE_LIST, { cache: "no-store" });
+    info = await r.json();
+  } catch (e) {
+    setStatus("WebRaceList fetch failed: " + e, false);
+    setTimeout(connect, 5000);
+    return;
+  }
+  if (!info.CurrentRaces || !info.CurrentRaces.length) {
+    setStatus("no current race — race not live?", false);
+    setTimeout(connect, 10000);
+    return;
+  }
+  const cr = info.CurrentRaces[0];
+  const host = info.LiveTimingHost || "cluster1.race-monitor.com";
+  const url = `wss://${host}/instance/${cr.Instance}/${info.LiveTimingToken}`;
+  setStatus("connecting websocket…", false);
+  const ws = new WebSocket(url);
+  ws.onopen = () => {
+    ws.send(`$JOIN,${cr.Instance},${info.LiveTimingToken}`);
+    state.connected = true;
+    setStatus("live", true);
+  };
+  ws.onmessage = (ev) => {
+    const data = ev.data;
+    // server sometimes sends multiple lines per frame
+    for (const line of String(data).split(/\n+/)) {
+      if (line) applyMessage(line);
+    }
+    scheduleRender();
+  };
+  ws.onclose = () => {
+    state.connected = false;
+    setStatus("disconnected — reconnecting…", false);
+    setTimeout(connect, 3000);
+  };
+  ws.onerror = () => {
+    setStatus("ws error", false);
+  };
+}
+
+function setStatus(msg, ok) {
+  const el = document.getElementById("status");
+  el.textContent = msg;
+  el.className = "badge " + (ok ? "ok" : "err");
+}
+
+// -------- render ---------
+let renderPending = false;
+function scheduleRender() {
+  if (renderPending) return;
+  renderPending = true;
+  setTimeout(() => { renderPending = false; render(); }, 250);
+}
+
+function classOf(c) {
+  return state.classes[c.classID] || c.classID || "";
+}
+
+function render() {
+  document.getElementById("raceName").textContent = state.raceName || "—";
+  document.getElementById("elapsed").textContent = state.elapsed || "—";
+  document.getElementById("remaining").textContent = state.remaining || "—";
+
+  const flagEl = document.getElementById("flag");
+  const fl = (state.flag || "").toLowerCase();
+  flagEl.textContent = state.flag || "—";
+  flagEl.className = "flag " + (fl.includes("green") ? "green" : fl.includes("yellow") ? "yellow" : fl.includes("red") ? "red" : "other");
+
+  const all = Object.values(state.competitors);
+  document.getElementById("numTeams").textContent = all.length;
+
+  // sort by overall position; teams without one go to the bottom
+  all.sort((a,b) => {
+    const ap = a.position == null ? 1e9 : a.position;
+    const bp = b.position == null ? 1e9 : b.position;
+    if (ap !== bp) return ap - bp;
+    return (b.laps - a.laps);
+  });
+
+  // class position: for each class, by laps desc then totalTime asc
+  const byClass = {};
+  for (const c of all) {
+    const k = classOf(c) || "?";
+    (byClass[k] = byClass[k] || []).push(c);
+  }
+  for (const k of Object.keys(byClass)) {
+    byClass[k].sort((a,b) => {
+      if (b.laps !== a.laps) return b.laps - a.laps;
+      return (a.totalTimeSec||0) - (b.totalTimeSec||0);
+    });
+    byClass[k].forEach((c, i) => c.classPos = i + 1);
+  }
+
+  // find target team
+  const target = all.find(c => (c.name||"").toLowerCase().includes(TARGET_MATCH));
+
+  // table
+  const tbody = document.querySelector("#board tbody");
+  const rows = [];
+  for (const c of all) {
+    const cls = classOf(c);
+    const pace = c.laps > 0 ? c.totalTimeSec / c.laps : 0;
+    const hit = target && c.racerID === target.racerID;
+    rows.push(`<tr class="${hit?'tc':''}">
+      <td class="num">${c.position ?? "—"}</td>
+      <td class="num">${c.classPos ?? "—"}</td>
+      <td class="num">${esc(c.number)}</td>
+      <td>${esc(c.name)}</td>
+      <td>${esc(cls)}</td>
+      <td>${esc(c.car)}</td>
+      <td class="num">${c.laps}</td>
+      <td class="num">${fmtHMS(c.totalTimeSec)}</td>
+      <td class="num">${fmtLap(pace)}</td>
+      <td class="num">${fmtLap(c.lastLapSec)}</td>
+      <td class="num">${fmtLap(c.bestLapSec)}</td>
+    </tr>`);
+  }
+  tbody.innerHTML = rows.join("");
+
+  renderProjection(all, byClass, target);
+  renderRivals(byClass, target);
+}
+
+function renderRivals(byClass, target) {
+  const wrap = document.getElementById("rivalsWrap");
+  if (!target) { wrap.innerHTML = `<span class="small">target not found yet…</span>`; return; }
+  const cls = classOf(target);
+  const classmates = (byClass[cls] || []).filter(c => c.racerID !== target.racerID);
+  // sort by class position, then take 5 ahead + 5 behind us
+  classmates.sort((a,b) => (a.classPos ?? 999) - (b.classPos ?? 999));
+  const myCP = target.classPos ?? 999;
+  const ahead = classmates.filter(c => (c.classPos ?? 999) < myCP);
+  const behind = classmates.filter(c => (c.classPos ?? 999) > myCP);
+  const aheadSlice = ahead.slice(-5);                  // 5 immediately ahead
+  let behindSlice = behind.slice(0, 5);                // 5 immediately behind
+  // top up to 10 if either side is short
+  let rivals = aheadSlice.concat(behindSlice);
+  if (rivals.length < 10) {
+    const need = 10 - rivals.length;
+    const more = (aheadSlice.length < 5 ? behind.slice(behindSlice.length, behindSlice.length + need)
+                                        : ahead.slice(0, Math.max(0, ahead.length - aheadSlice.length)).slice(-need));
+    rivals = aheadSlice.concat(behindSlice).concat(more);
+    rivals.sort((a,b) => (a.classPos ?? 999) - (b.classPos ?? 999));
+  }
+  if (!rivals.length) {
+    wrap.innerHTML = `<span class="small">no other teams in class ${cls}.</span>`;
+    return;
+  }
+
+  const myPace = target.laps > 0 ? target.totalTimeSec / target.laps : 0;
+  const tRem = parseHMS(state.remaining || "0");
+
+  function paceSafety(c) {
+    // For teams we're ahead of: max Δ (seconds we can SLOW per lap) before we still finish ahead,
+    // assuming both teams maintain pace from now to end of race.
+    // me_laps + T_rem/(myPace+Δ) = them_laps + T_rem/them_pace
+    if (!tRem || !myPace) return null;
+    const themPace = c.laps > 0 ? c.totalTimeSec / c.laps : 0;
+    if (!themPace) return null;
+    const denom = (c.laps - target.laps) + (tRem / themPace);
+    if (denom <= 0) return Infinity;        // they can't catch even if I parked
+    const newMyPace = tRem / denom;
+    return newMyPace - myPace;              // + = cushion in seconds/lap
+  }
+
+  const rows = rivals.map(c => {
+    const pace = c.laps > 0 ? c.totalTimeSec / c.laps : 0;
+    const lapGap = c.laps - target.laps;
+    const isAhead = (c.classPos ?? 999) < myCP;
+    const paceDelta = pace - myPace;
+    const gapLabel = lapGap === 0 ? "same lap"
+                    : (lapGap > 0 ? `+${lapGap} lap${lapGap===1?'':'s'}`
+                                  : `${lapGap} lap${lapGap===-1?'':'s'}`);
+    let smCell = '<td class="num small">—</td>';
+    if (!isAhead) {
+      const sm = paceSafety(c);
+      if (sm === null) smCell = '<td class="num small">—</td>';
+      else if (!isFinite(sm)) smCell = '<td class="num gain">∞</td>';
+      else {
+        const color = sm <= 0 ? '#ff7a7a' : sm < 3 ? '#ffd54f' : '#5fe089';
+        smCell = `<td class="num" style="color:${color}">${sm>0?'+':''}${sm.toFixed(2)}s</td>`;
+      }
+    }
+    return `<tr>
+      <td class="num">${c.classPos ?? "—"}</td>
+      <td class="num">${c.position ?? "—"}</td>
+      <td class="num">${esc(c.number)}</td>
+      <td>${esc(c.name)}</td>
+      <td>${esc(c.car)}</td>
+      <td class="num">${c.laps}</td>
+      <td class="num">${gapLabel}</td>
+      <td class="num">${fmtLap(pace)}</td>
+      <td class="num" style="color:${paceDelta<0?'#ff7a7a':paceDelta>0?'#5fe089':'var(--dim)'}">${paceDelta>0?'+':''}${paceDelta.toFixed(2)}s</td>
+      <td class="num">${fmtLap(c.lastLapSec)}</td>
+      ${smCell}
+      <td><span class="small">${isAhead ? 'ahead' : 'behind'}</span></td>
+    </tr>`;
+  }).join("");
+  wrap.innerHTML = `
+    <div class="small" style="margin-bottom:6px">
+      Showing ${rivals.length} class ${cls} teams nearest us (${classmates.length} total in class).
+      Pace Δ = theirs − ours (− = they're faster).
+      <b>Safety margin</b> = how many seconds slower per lap we could run and still finish ahead of that team, assuming they hold pace. Only shown for teams currently behind us.
+    </div>
+    <table>
+      <thead><tr>
+        <th class="num">CP</th><th class="num">P</th><th class="num">#</th>
+        <th>Team</th><th>Car</th>
+        <th class="num">Laps</th><th class="num">Gap (laps)</th>
+        <th class="num">Avg Pace</th><th class="num">Pace Δ</th>
+        <th class="num">Last Lap</th><th class="num">Safety Margin</th>
+        <th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"]/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[ch]));
+}
+
+function renderProjection(all, byClass, target) {
+  const wrap = document.getElementById("projWrap");
+  const nameEl = document.getElementById("projTeamName");
+  if (!target) {
+    nameEl.textContent = `(no match for "${targetMatch}")`;
+    wrap.innerHTML = `<span class="small">team not found yet — waiting for full roster…</span>`;
+    return;
+  }
+  nameEl.textContent = target.name + ` (#${target.number}, class ${classOf(target)})`;
+
+  const pace = target.laps > 0 ? target.totalTimeSec / target.laps : 0;
+  // race elapsed: prefer the official $F value; fall back to the target's own totalTime.
+  const elapsed = state.elapsedSec > 0 ? state.elapsedSec : target.totalTimeSec;
+  if (pace <= 0 || elapsed <= 0) {
+    wrap.innerHTML = `<span class="small">not enough data yet — team has ${target.laps} laps.</span>`;
+    return;
+  }
+  const cls = classOf(target);
+  const classmates = (byClass[cls] || []).filter(c => c.racerID !== target.racerID);
+  const others = all.filter(c => c.racerID !== target.racerID);
+
+  // rank using the same key the race uses: (laps DESC, totalTime ASC).
+  // for the hypothetical, my projected integer laps = floor(elapsed/(pace-delta)),
+  // and my hypothetical total time at that lap count = projLaps * (pace - delta).
+  function rankAmong(group, projLapsInt, projTotal) {
+    let ahead = 0;
+    for (const c of group) {
+      if (c.laps > projLapsInt) ahead++;
+      else if (c.laps === projLapsInt && (c.totalTimeSec || 0) < projTotal) ahead++;
+    }
+    return ahead + 1;
+  }
+
+  const rows = [];
+  for (let d = 0; d <= 5; d++) {
+    const newPace = pace - d;
+    let projLapsFloat, projLapsInt, projTotal;
+    if (d === 0) {
+      // anchor current row to official position
+      projLapsFloat = target.laps;
+      projLapsInt = target.laps;
+      projTotal = target.totalTimeSec;
+    } else if (newPace <= 0) {
+      projLapsFloat = Infinity; projLapsInt = 1e9; projTotal = 0;
+    } else {
+      projLapsFloat = elapsed / newPace;
+      projLapsInt = Math.floor(projLapsFloat);
+      projTotal = projLapsInt * newPace;
+    }
+    const overallRank = d === 0 ? (target.position ?? rankAmong(others, projLapsInt, projTotal))
+                                : rankAmong(others, projLapsInt, projTotal);
+    const classRank = d === 0 ? (target.classPos ?? rankAmong(classmates, projLapsInt, projTotal))
+                              : rankAmong(classmates, projLapsInt, projTotal);
+    const overallGain = (target.position ?? 0) - overallRank;
+    const classGain = (target.classPos ?? 0) - classRank;
+    const lapGain = isFinite(projLapsFloat) ? projLapsFloat - target.laps : Infinity;
+    rows.push(`<tr ${d===0?'class="delta-current"':''}>
+      <td class="num">${d===0 ? "current" : "−" + d + "s"}</td>
+      <td>${fmtLap(newPace)} / lap</td>
+      <td class="num">${isFinite(projLapsFloat) ? projLapsFloat.toFixed(2) : "∞"}</td>
+      <td class="num">${d===0 ? "—" : (lapGain>=0?"+":"") + lapGain.toFixed(2)}</td>
+      <td class="num">${overallRank} <span class="small">${d>0 && overallGain>0 ? '<span class="gain">+'+overallGain+'</span>' : ''}</span></td>
+      <td class="num">${classRank} <span class="small">${d>0 && classGain>0 ? '<span class="gain">+'+classGain+'</span>' : ''}</span></td>
+    </tr>`);
+  }
+  wrap.innerHTML = `
+    <div class="small" style="margin-bottom:6px">
+      Currently: <b>${target.laps}</b> laps,
+      avg pace <b>${fmtLap(pace)}</b>,
+      total time <b>${fmtHMS(target.totalTimeSec)}</b>,
+      overall <b>P${target.position ?? "?"}</b>,
+      class ${cls} <b>P${target.classPos ?? "?"}</b>.
+      Class ${cls} has ${classmates.length + 1} teams; overall ${all.length} teams.
+    </div>
+    <table class="projection">
+      <thead>
+        <tr>
+          <th class="num">Pace Δ</th>
+          <th>Hypothetical pace</th>
+          <th class="num">Proj laps now</th>
+          <th class="num">Lap gain</th>
+          <th class="num">Overall rank</th>
+          <th class="num">Class rank</th>
+        </tr>
+      </thead>
+      <tbody>${rows.join("")}</tbody>
+    </table>
+  `;
+}
+
+// -------- go ---------
+connect();
+// periodic render for clocks/flag, even with no new messages
+setInterval(scheduleRender, 5000);
+</script>
+</body>
+</html>
