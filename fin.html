@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Financial Calculator</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0f0e0c;
+            --panel: #171512;
+            --ink: #f3efe6;
+            --muted: #a79f91;
+            --line: #34302a;
+            --accent: #8fc7ff;
+            --warn: #ffbe68;
+            --bad: #ff8d7d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.45;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .gate {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .gate form,
+        .app {
+            width: min(1180px, calc(100% - 32px));
+        }
+
+        .gate form {
+            max-width: 360px;
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+        }
+
+        .gate h1,
+        .app h1,
+        .app h2 {
+            margin: 0;
+            line-height: 1.05;
+            letter-spacing: 0;
+        }
+
+        .gate h1 {
+            font-size: 1.35rem;
+        }
+
+        .gate p,
+        .note,
+        .assumptions {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .gate label {
+            display: grid;
+            gap: 8px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .gate input,
+        .money input,
+        select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #0d0c0a;
+            color: var(--ink);
+            padding: 9px 10px;
+        }
+
+        .gate button {
+            width: 100%;
+            margin-top: 14px;
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--accent);
+            padding: 9px 10px;
+            cursor: pointer;
+        }
+
+        .error {
+            min-height: 1.2em;
+            margin: 10px 0 0;
+            color: var(--bad);
+        }
+
+        .app {
+            margin: 0 auto;
+            padding: 42px 0 56px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: end;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .app h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 640;
+        }
+
+        .topbar p {
+            max-width: 520px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 380px minmax(0, 1fr);
+            gap: 28px;
+            margin-top: 28px;
+            align-items: start;
+        }
+
+        .inputs,
+        .outputs {
+            display: grid;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        section {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+        }
+
+        section h2 {
+            margin-bottom: 14px;
+            font-size: 0.96rem;
+            font-weight: 650;
+            color: var(--ink);
+        }
+
+        .fields {
+            display: grid;
+            gap: 12px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .field > span,
+        .radio-group legend {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .money {
+            position: relative;
+        }
+
+        .money::before {
+            content: "$";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.86rem;
+            pointer-events: none;
+        }
+
+        .money input {
+            padding-left: 24px;
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        .radios {
+            display: flex;
+            gap: 12px;
+        }
+
+        .radios label,
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ink);
+            font-size: 0.9rem;
+        }
+
+        .housing-detail {
+            display: none;
+        }
+
+        body[data-housing="rent"] .housing-detail[data-mode="rent"],
+        body[data-housing="own"] .housing-detail[data-mode="own"] {
+            display: grid;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .metric {
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #12100e;
+        }
+
+        .metric span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        caption {
+            padding-bottom: 8px;
+            color: var(--ink);
+            font-weight: 650;
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 9px 8px;
+            border-bottom: 1px solid var(--line);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        th:first-child,
+        td:first-child {
+            text-align: left;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 0.76rem;
+            font-weight: 550;
+        }
+
+        .speculative {
+            color: var(--warn);
+        }
+
+        .assumptions {
+            margin: 0;
+        }
+
+        .assumptions a {
+            color: var(--accent);
+        }
+
+        .table-wrap {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 980px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                display: grid;
+            }
+
+            .topbar p {
+                text-align: left;
+            }
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 620px) {
+            .gate form,
+            .app {
+                width: min(100% - 24px, 520px);
+            }
+
+            .split,
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 14px;
+            }
+
+        }
+    </style>
+</head>
+<body data-housing="rent">
+    <main class="gate" id="gate">
+        <form id="password-form">
+            <h1>Financial Calculator</h1>
+            <p>Enter password.</p>
+            <label>
+                Password
+                <input id="password" type="password" autocomplete="current-password" autofocus>
+            </label>
+            <button type="submit">Unlock</button>
+            <p class="error" id="password-error" aria-live="polite"></p>
+        </form>
+    </main>
+
+    <main class="app" id="app" hidden>
+        <div class="topbar">
+            <h1>Financial Calculator</h1>
+            <p>Illustrative planning model. Not financial, tax, legal, or insurance advice.</p>
+        </div>
+
+        <div class="layout">
+            <div class="inputs">
+                <section>
+                    <h2>Assets</h2>
+                    <div class="fields">
+                        <label class="field">
+                            <span>Alex Assets</span>
+                            <span class="money"><input id="alexAssets" type="number" min="0" step="10000" value="8000000"></span>
+                        </label>
+                        <label class="field">
+                            <span>Annie Assets</span>
+                            <span class="money"><input id="annieAssets" type="number" min="0" step="10000" value="3000000"></span>
+                        </label>
+                        <label class="field">
+                            <span>Alex Carry <span class="speculative">(Speculative, pre-tax)</span></span>
+                            <span class="money"><input id="alexCarry" type="number" min="0" step="10000" value="2000000"></span>
+                        </label>
+                        <label class="check">
+                            <input id="includeCarry" type="checkbox">
+                            Include carry <span id="carryToggleWarning" class="speculative" hidden>SPECULATIVE!</span>
+                        </label>
+                        <p class="note">Assets are modeled as 80% stocks / 20% bonds.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Income</h2>
+                    <div class="fields">
+                        <label class="field">
+                            <span>Alex Income</span>
+                            <span class="money"><input id="alexIncome" type="number" min="0" step="10000" value="800000"></span>
+                        </label>
+                        <label class="field">
+                            <span>Annie Income</span>
+                            <span class="money"><input id="annieIncome" type="number" min="0" step="10000" value="1200000"></span>
+                        </label>
+                        <label class="field">
+                            <span>Part-time Work After Retirement Income</span>
+                            <span class="money"><input id="partTimeIncome" type="number" min="0" step="5000" value="0"></span>
+                        </label>
+                        <label class="check">
+                            <input id="partTimeInsurance" type="checkbox">
+                            Has insurance
+                        </label>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Total Spend</h2>
+                    <div class="fields">
+                        <div class="field">
+                            <span>Alex Spend</span>
+                            <div class="split">
+                                <span class="money"><input id="alexSpendYear" type="number" min="0" step="1000" value="200000" aria-label="Alex yearly spend"></span>
+                                <span class="money"><input id="alexSpendMonth" type="number" min="0" step="100" value="16667" aria-label="Alex monthly spend"></span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <span>Annie Spend</span>
+                            <div class="split">
+                                <span class="money"><input id="annieSpendYear" type="number" min="0" step="1000" value="200000" aria-label="Annie yearly spend"></span>
+                                <span class="money"><input id="annieSpendMonth" type="number" min="0" step="100" value="16667" aria-label="Annie monthly spend"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Housing, Location, Health</h2>
+                    <div class="fields">
+                        <fieldset class="radio-group">
+                            <legend>Housing</legend>
+                            <div class="radios">
+                                <label><input type="radio" name="housing" value="rent" checked> Rent</label>
+                                <label><input type="radio" name="housing" value="own"> Own</label>
+                            </div>
+                        </fieldset>
+                        <label class="field housing-detail" data-mode="rent">
+                            <span>Monthly Cost</span>
+                            <span class="money"><input id="rentMonthly" type="number" min="0" step="500" value="10000"></span>
+                        </label>
+                        <div class="fields housing-detail" data-mode="own">
+                            <label class="field">
+                                <span>Cost</span>
+                                <span class="money"><input id="homeCost" type="number" min="0" step="10000" value="2500000"></span>
+                            </label>
+                            <label class="field">
+                                <span>Yearly Cost</span>
+                                <span class="money"><input id="homeYearly" type="number" min="0" step="1000" value="60000"></span>
+                            </label>
+                        </div>
+                        <label class="field">
+                            <span>Location</span>
+                            <select id="location">
+                                <option value="CA">CA</option>
+                                <option value="NYC">NYC</option>
+                                <option value="Colorado">Colorado</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Health Insurance for 2, Monthly Estimate</span>
+                            <span class="money"><input id="healthMonthly" type="number" min="0" step="100" value="2500"></span>
+                        </label>
+                    </div>
+                </section>
+            </div>
+
+            <div class="outputs">
+                <section>
+                    <h2>Model Snapshot</h2>
+                    <div class="summary" id="summary"></div>
+                    <p class="assumptions">
+                        Projection rows mean retiring after that many more work years. Working years add after-tax income, subtract listed annual spend and housing, and compound investable assets at a fixed 4.5% annual return from the 80/20 mix. Monthly spending output is after taxes, housing, and health insurance unless part-time work has insurance.
+                    </p>
+                </section>
+
+                <section>
+                    <div class="table-wrap">
+                        <table id="spendingTable"></table>
+                    </div>
+                    <p class="note speculative" id="carryNote" hidden>SPECULATIVE! Carry is modeled as a pre-tax windfall reduced by the investment tax rate before being added to assets.</p>
+                </section>
+
+                <section>
+                    <p class="assumptions">
+                        Marketplace health premiums vary by location, age, tobacco use, plan category, and household coverage. Exact plan prices require a Marketplace application or quote. Sources: <a href="https://www.healthcare.gov/how-plans-set-your-premiums/" target="_blank" rel="noreferrer">HealthCare.gov</a> and <a href="https://www.kff.org/interactive/subsidy-calculator/" target="_blank" rel="noreferrer">KFF Marketplace Calculator</a>.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const PASSWORD_HASH = 'e2e7d3d809e7a12b8f08bd7d328f04e31698ead8a4e7ed4b4e7409c57f1afe0a';
+        const TAX = {
+            CA: { ordinary: 0.46, investment: 0.28 },
+            NYC: { ordinary: 0.48, investment: 0.30 },
+            Colorado: { ordinary: 0.40, investment: 0.22 }
+        };
+        const RATES = [
+            { rate: 0.025, label: '2.5% (Very Safe)' },
+            { rate: 0.03, label: '3% (Very Safe)' },
+            { rate: 0.035, label: '3.5% (Safe)' },
+            { rate: 0.04, label: '4% (Somewhat Safe)' }
+        ];
+        const BLENDED_RETURN = 0.8 * 0.05 + 0.2 * 0.025;
+
+        const gate = document.getElementById('gate');
+        const app = document.getElementById('app');
+        const form = document.getElementById('password-form');
+        const passwordInput = document.getElementById('password');
+        const passwordError = document.getElementById('password-error');
+
+        async function sha256(value) {
+            const bytes = new TextEncoder().encode(value);
+            const digest = await crypto.subtle.digest('SHA-256', bytes);
+            return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function unlock() {
+            gate.hidden = true;
+            app.hidden = false;
+            calculate();
+        }
+
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            const hash = await sha256(passwordInput.value);
+
+            if (hash === PASSWORD_HASH) {
+                unlock();
+            } else {
+                passwordError.textContent = 'Wrong password.';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        const $ = id => document.getElementById(id);
+        const money = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        });
+        const number = new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 0
+        });
+
+        function parseMoney(value) {
+            return Number(String(value || '').replace(/[^\d.-]/g, '')) || 0;
+        }
+
+        const value = id => parseMoney($(id).value);
+
+        function formatInputMoney(input) {
+            input.value = number.format(parseMoney(input.value));
+        }
+
+        document.querySelectorAll('.money input').forEach(input => {
+            input.type = 'text';
+            input.inputMode = 'numeric';
+            formatInputMoney(input);
+            input.addEventListener('blur', () => formatInputMoney(input));
+        });
+
+        function compactMoney(amount) {
+            const sign = amount < 0 ? '-' : '';
+            const absolute = Math.abs(amount);
+
+            if (absolute >= 1_000_000) {
+                return `${sign}$${(absolute / 1_000_000).toFixed(1)}M`;
+            }
+
+            return money.format(amount);
+        }
+
+        function syncAnnualMonthly(annualId, monthlyId) {
+            const annual = $(annualId);
+            const monthly = $(monthlyId);
+
+            annual.addEventListener('input', () => {
+                monthly.value = number.format(Math.round(value(annualId) / 12));
+                calculate();
+            });
+
+            monthly.addEventListener('input', () => {
+                annual.value = number.format(Math.round(value(monthlyId) * 12));
+                calculate();
+            });
+        }
+
+        syncAnnualMonthly('alexSpendYear', 'alexSpendMonth');
+        syncAnnualMonthly('annieSpendYear', 'annieSpendMonth');
+
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', calculate);
+            input.addEventListener('change', calculate);
+        });
+
+        document.querySelectorAll('input[name="housing"]').forEach(input => {
+            input.addEventListener('change', () => {
+                document.body.dataset.housing = document.querySelector('input[name="housing"]:checked').value;
+                calculate();
+            });
+        });
+
+        function getInputs() {
+            const housing = document.querySelector('input[name="housing"]:checked').value;
+            const taxes = TAX[$('location').value];
+            const baseAssets = value('alexAssets') + value('annieAssets') - (housing === 'own' ? value('homeCost') : 0);
+            const income = value('alexIncome') + value('annieIncome');
+            const afterTaxIncome = income * (1 - taxes.ordinary);
+            const annualHousing = housing === 'rent' ? value('rentMonthly') * 12 : value('homeYearly');
+            const currentAnnualSpend = value('alexSpendYear') + value('annieSpendYear') + annualHousing;
+            const healthAnnual = $('partTimeInsurance').checked ? 0 : value('healthMonthly') * 12;
+            const includeCarry = $('includeCarry').checked;
+
+            return {
+                housing,
+                taxes,
+                baseAssets,
+                income,
+                afterTaxIncome,
+                currentAnnualSpend,
+                annualHousing,
+                healthAnnual,
+                carry: value('alexCarry'),
+                includeCarry,
+                partTimeIncome: value('partTimeIncome')
+            };
+        }
+
+        function projectAssets(inputs, years) {
+            let assets = inputs.baseAssets;
+
+            for (let year = 0; year < years; year += 1) {
+                assets = assets * (1 + BLENDED_RETURN) + inputs.afterTaxIncome - inputs.currentAnnualSpend;
+            }
+
+            return assets;
+        }
+
+        function spendCapacity(assetBase, inputs, withdrawalRate) {
+            const afterTaxWithdrawal = assetBase * withdrawalRate * (1 - inputs.taxes.investment);
+            const afterTaxPartTime = inputs.partTimeIncome * (1 - inputs.taxes.ordinary);
+            return (afterTaxWithdrawal + afterTaxPartTime - inputs.annualHousing - inputs.healthAnnual) / 12;
+        }
+
+        function buildRows(inputs) {
+            const carryNet = inputs.includeCarry ? inputs.carry * (1 - inputs.taxes.investment) : 0;
+
+            return Array.from({ length: 6 }, (_, years) => {
+                const totalAssets = projectAssets(inputs, years) + carryNet;
+                return {
+                    years,
+                    totalAssets,
+                    spending: RATES.map(item => spendCapacity(totalAssets, inputs, item.rate))
+                };
+            });
+        }
+
+        function renderTable(id, rows, includeCarry) {
+            const table = $(id);
+            table.innerHTML = `
+                <caption>Monthly Spending (Net of Taxes and Housing) ${includeCarry ? '<span class="speculative">SPECULATIVE!</span>' : ''}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Years</th>
+                        <th scope="col">Total Assets After Growth</th>
+                        ${RATES.map(item => `<th scope="col">${item.label}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.map(row => `
+                        <tr>
+                            <td>${row.years}</td>
+                            <td>${compactMoney(row.totalAssets)}</td>
+                            ${row.spending.map(amount => `<td>${money.format(amount)}/mo</td>`).join('')}
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        function renderSummary(inputs) {
+            const summary = $('summary');
+            summary.innerHTML = [
+                ['Investable assets now', compactMoney(inputs.baseAssets)],
+                ['After-tax work income', compactMoney(inputs.afterTaxIncome)],
+                ['Market growth assumption', `${(BLENDED_RETURN * 100).toFixed(1)}% / year`],
+                ['Annual spend while working', compactMoney(inputs.currentAnnualSpend)],
+                ['Annual housing deducted', compactMoney(inputs.annualHousing)],
+                ['Retirement Health Insurance Cost', compactMoney(inputs.healthAnnual)],
+                ['Carry in table', inputs.includeCarry ? 'Yes - speculative' : 'No']
+            ].map(([label, figure]) => `
+                <div class="metric">
+                    <span>${label}</span>
+                    <strong>${figure}</strong>
+                </div>
+            `).join('');
+        }
+
+        function calculate() {
+            if (app.hidden) {
+                return;
+            }
+
+            const inputs = getInputs();
+            renderSummary(inputs);
+            $('carryToggleWarning').hidden = !inputs.includeCarry;
+            $('carryNote').hidden = !inputs.includeCarry;
+            renderTable('spendingTable', buildRows(inputs), inputs.includeCarry);
+        }
+    </script>
+</body>
+</html>
