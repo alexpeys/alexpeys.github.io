@@ -250,7 +250,7 @@
         const sounded = voicing.frets.filter(fret => fret >= 0);
         const positive = sounded.filter(fret => fret > 0);
         if (sounded.includes(0) && (!positive.length || Math.max(...positive) <= 4)) return "Open position";
-        const center = Math.round(voicingPosition(voicing));
+        const center = Math.round(voicingPosition(voicing.frets));
         return `Around fret ${Math.max(1, center)}`;
     }
 
@@ -729,7 +729,8 @@
         generateVoicings,
         voiceLeadMetrics,
         chooseChordScale,
-        buildTab
+        buildTab,
+        describePosition
     };
 
     if (typeof module !== "undefined" && module.exports) module.exports = api;
