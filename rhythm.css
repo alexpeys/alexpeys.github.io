@@ -565,7 +565,8 @@ footer {
 }
 
 .shape-string i,
-.shape-string strong {
+.shape-string strong,
+.shape-string small {
   display: block;
   font-style: normal;
 }
@@ -584,6 +585,19 @@ footer {
 
 .shape-string.is-muted strong {
   color: #666a74;
+}
+
+.shape-string small {
+  min-height: 1.1em;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--blue-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.5rem;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .option-position {

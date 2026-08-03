@@ -457,6 +457,15 @@
         return element;
     }
 
+    function voicingNoteLabels(voicing, chord) {
+        return voicing.frets.map((fret, index) => {
+            if (fret < 0) return "";
+            const pitchClass = mod(TUNING[index].pc + fret);
+            const chordInterval = pitchClass === chord.root ? "root" : intervalLabel(chord.root, pitchClass);
+            return `${noteName(pitchClass)}(${chordInterval})`;
+        });
+    }
+
     function renderKeyPanel() {
         const best = state.key;
         const exact = best.missing === 0;
@@ -485,13 +494,15 @@
         keyPanel.hidden = false;
     }
 
-    function shapeStringGrid(voicing) {
+    function shapeStringGrid(voicing, chord) {
         const grid = createElement("div", "shape-strings");
+        const noteLabels = voicingNoteLabels(voicing, chord);
         voicing.frets.forEach((fret, index) => {
             const string = createElement("span", `shape-string${fret < 0 ? " is-muted" : ""}`);
             string.append(
                 createElement("i", "", TUNING[index].name),
-                createElement("strong", "", fret < 0 ? "×" : String(fret))
+                createElement("strong", "", fret < 0 ? "×" : String(fret)),
+                createElement("small", "", noteLabels[index])
             );
             grid.append(string);
         });
@@ -588,7 +599,7 @@
 
             button.append(
                 rank,
-                shapeStringGrid(voicing),
+                shapeStringGrid(voicing, chord),
                 createElement("div", "option-position", describePosition(voicing)),
                 createElement("p", "option-detail", detail)
             );
@@ -766,7 +777,8 @@
         chooseChordScale,
         buildTab,
         describePosition,
-        rankVoicings
+        rankVoicings,
+        voicingNoteLabels
     };
 
     if (typeof module !== "undefined" && module.exports) module.exports = api;
