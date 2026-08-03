@@ -544,7 +544,7 @@
         const sameToneCount = fullCount === triadCount;
         let guidance;
         if (kind === "full" && sameToneCount) {
-            guidance = `${chord.raw} has ${fullCount} distinct chord tones, so its full voicings match the triads. Full mode stays on and will add 7ths or extensions later.`;
+            guidance = `${chord.raw} has ${fullCount} distinct chord tones, so both modes use the same notes here. All tones stays on and will include 7ths or extensions later.`;
         } else if (index === 0) {
             guidance = `Choose a ${selectedCount}-note starting shape that feels right. This mode carries through the progression.`;
         } else {
@@ -556,16 +556,16 @@
             const buttonKind = button.dataset.kind;
             button.classList.toggle("is-active", buttonKind === kind);
             if (buttonKind === "full") {
-                button.textContent = fullCount === triadCount ? `Full (${fullCount})` : `Full chord (${fullCount})`;
+                button.textContent = `All tones (${fullCount})`;
             } else {
-                button.textContent = triadCount === 3 ? "Triad (3)" : `Core (${triadCount})`;
+                button.textContent = `Triad / guide tones (${triadCount})`;
             }
         });
 
         const grid = document.getElementById("voicing-grid");
         grid.replaceChildren();
         if (!options.length) {
-            grid.append(createElement("p", "empty-voicings", "No compact shape found in the first 15 frets. Try the triad/core version for this chord."));
+            grid.append(createElement("p", "empty-voicings", "No compact shape found in the first 15 frets. Try Triad / guide tones for this chord."));
         }
 
         const rankNames = previous ? ["Most natural", "Very smooth", "Very smooth", "Close move", "Close move", "Alternate", "Alternate", "Stretch"] : ["Easy anchor", "Open choice", "Low neck", "Compact", "Middle neck", "Alternate", "Higher color", "Upper neck"];
