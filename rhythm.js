@@ -21,24 +21,24 @@
         sus2: { label: "sus2", family: "sus", triad: [0, 2, 7], full: [0, 2, 7] },
         sus4: { label: "sus4", family: "sus", triad: [0, 5, 7], full: [0, 5, 7] },
         power: { label: "power chord", family: "power", triad: [0, 7], full: [0, 7] },
-        six: { label: "sixth", family: "major", triad: [0, 4, 7], full: [0, 4, 7, 9] },
-        minor6: { label: "minor sixth", family: "minor", triad: [0, 3, 7], full: [0, 3, 7, 9] },
-        seven: { label: "dominant seventh", family: "major", triad: [0, 4, 7], full: [0, 4, 7, 10] },
-        maj7: { label: "major seventh", family: "major", triad: [0, 4, 7], full: [0, 4, 7, 11] },
-        min7: { label: "minor seventh", family: "minor", triad: [0, 3, 7], full: [0, 3, 7, 10] },
-        minMaj7: { label: "minor-major seventh", family: "minor", triad: [0, 3, 7], full: [0, 3, 7, 11] },
-        dim7: { label: "diminished seventh", family: "dim", triad: [0, 3, 6], full: [0, 3, 6, 9] },
-        halfDim7: { label: "half-diminished", family: "dim", triad: [0, 3, 6], full: [0, 3, 6, 10] },
-        sevenSus4: { label: "seventh sus4", family: "sus", triad: [0, 5, 7], full: [0, 5, 7, 10] },
-        add9: { label: "add nine", family: "major", triad: [0, 4, 7], full: [0, 2, 4, 7] },
-        minAdd9: { label: "minor add nine", family: "minor", triad: [0, 3, 7], full: [0, 2, 3, 7] },
-        nine: { label: "dominant ninth", family: "major", triad: [0, 4, 7], full: [0, 2, 4, 7, 10] },
-        maj9: { label: "major ninth", family: "major", triad: [0, 4, 7], full: [0, 2, 4, 7, 11] },
-        min9: { label: "minor ninth", family: "minor", triad: [0, 3, 7], full: [0, 2, 3, 7, 10] },
-        eleven: { label: "eleventh", family: "major", triad: [0, 4, 7], full: [0, 2, 4, 5, 7, 10] },
-        min11: { label: "minor eleventh", family: "minor", triad: [0, 3, 7], full: [0, 2, 3, 5, 7, 10] },
-        thirteen: { label: "thirteenth (essential tones)", family: "major", triad: [0, 4, 7], full: [0, 2, 4, 9, 10] },
-        min13: { label: "minor thirteenth (essential tones)", family: "minor", triad: [0, 3, 7], full: [0, 2, 3, 9, 10] }
+        six: { label: "sixth", family: "major", triad: [4, 7, 9], full: [0, 4, 7, 9] },
+        minor6: { label: "minor sixth", family: "minor", triad: [3, 7, 9], full: [0, 3, 7, 9] },
+        seven: { label: "dominant seventh", family: "major", triad: [4, 7, 10], full: [0, 4, 7, 10] },
+        maj7: { label: "major seventh", family: "major", triad: [4, 7, 11], full: [0, 4, 7, 11] },
+        min7: { label: "minor seventh", family: "minor", triad: [3, 7, 10], full: [0, 3, 7, 10] },
+        minMaj7: { label: "minor-major seventh", family: "minor", triad: [3, 7, 11], full: [0, 3, 7, 11] },
+        dim7: { label: "diminished seventh", family: "dim", triad: [3, 6, 9], full: [0, 3, 6, 9] },
+        halfDim7: { label: "half-diminished", family: "dim", triad: [3, 6, 10], full: [0, 3, 6, 10] },
+        sevenSus4: { label: "seventh sus4", family: "sus", triad: [5, 7, 10], full: [0, 5, 7, 10] },
+        add9: { label: "add nine", family: "major", triad: [0, 4, 2], full: [0, 2, 4, 7] },
+        minAdd9: { label: "minor add nine", family: "minor", triad: [0, 3, 2], full: [0, 2, 3, 7] },
+        nine: { label: "dominant ninth", family: "major", triad: [4, 10, 2], full: [0, 2, 4, 7, 10] },
+        maj9: { label: "major ninth", family: "major", triad: [4, 11, 2], full: [0, 2, 4, 7, 11] },
+        min9: { label: "minor ninth", family: "minor", triad: [3, 10, 2], full: [0, 2, 3, 7, 10] },
+        eleven: { label: "eleventh", family: "major", triad: [4, 10, 5], full: [0, 2, 4, 5, 7, 10] },
+        min11: { label: "minor eleventh", family: "minor", triad: [3, 10, 5], full: [0, 2, 3, 5, 7, 10] },
+        thirteen: { label: "thirteenth (essential tones)", family: "major", triad: [4, 10, 9], full: [0, 2, 4, 9, 10] },
+        min13: { label: "minor thirteenth (essential tones)", family: "minor", triad: [3, 10, 9], full: [0, 2, 3, 9, 10] }
     };
 
     const NOTE_TO_PC = {
@@ -103,7 +103,9 @@
         kinds: [],
         currentIndex: 0,
         inspectedIndex: 0,
-        scaleView: "full"
+        scaleView: "full",
+        rankMode: "fingers",
+        showAllVoicings: false
     };
 
     function mod(value, divisor = 12) {
@@ -247,6 +249,18 @@
         return INTERVAL_LABELS[mod(toPc - fromPc)];
     }
 
+    function chordIntervalLabel(chord, pitchClass) {
+        const interval = mod(pitchClass - chord.root);
+        if (interval === 0) return "root";
+        const extensionLabels = {
+            add9: { 2: "9" }, minAdd9: { 2: "9" },
+            nine: { 2: "9" }, maj9: { 2: "9" }, min9: { 2: "9" },
+            eleven: { 2: "9", 5: "11" }, min11: { 2: "9", 5: "11" },
+            thirteen: { 2: "9", 9: "13" }, min13: { 2: "9", 9: "13" }
+        };
+        return extensionLabels[chord.typeKey]?.[interval] || intervalLabel(chord.root, pitchClass);
+    }
+
     function voicingPosition(frets) {
         const positive = frets.filter(fret => fret > 0);
         if (!positive.length) return 0;
@@ -358,17 +372,55 @@
         return smaller.length ? best / smaller.length : 0;
     }
 
+    function fingerPositions(voicing) {
+        return voicing.frets
+            .map((fret, stringIndex) => fret > 0 ? { fret, stringIndex } : null)
+            .filter(Boolean);
+    }
+
+    function fingerTravel(previous, next) {
+        const previousPositions = fingerPositions(previous);
+        const nextPositions = fingerPositions(next);
+        if (!previousPositions.length && !nextPositions.length) return 0;
+
+        const smaller = previousPositions.length <= nextPositions.length ? previousPositions : nextPositions;
+        const larger = previousPositions.length <= nextPositions.length ? nextPositions : previousPositions;
+        let best = Infinity;
+
+        function assign(index, used, total) {
+            if (total >= best) return;
+            if (index === smaller.length) {
+                best = total;
+                return;
+            }
+            larger.forEach((position, targetIndex) => {
+                if (used.has(targetIndex)) return;
+                const source = smaller[index];
+                const distance = Math.abs(source.fret - position.fret) + Math.abs(source.stringIndex - position.stringIndex) * 0.75;
+                used.add(targetIndex);
+                assign(index + 1, used, total + distance);
+                used.delete(targetIndex);
+            });
+        }
+
+        assign(0, new Set(), 0);
+        const addedOrLiftedFingerCost = (larger.length - smaller.length) * 1.5;
+        return (best + addedOrLiftedFingerCost) / Math.max(previousPositions.length, nextPositions.length);
+    }
+
     function voiceLeadMetrics(previous, next) {
         if (!previous) {
-            return { score: next.playability, movement: 0, common: 0, bassMove: 0 };
+            return { score: next.playability, semitoneScore: next.playability, fingerMovement: 0, movement: 0, common: 0, bassMove: 0 };
         }
         const movement = assignmentCost(previous.pitches, next.pitches);
+        const fingerMovement = fingerTravel(previous, next);
         const previousPcs = new Set(previous.pcs);
         const common = [...new Set(next.pcs)].filter(pc => previousPcs.has(pc)).length;
         const bassMove = Math.abs(previous.pitches[0] - next.pitches[0]);
         const positionMove = Math.abs(previous.center - next.center);
-        const score = Math.max(0, movement * 1.25 + bassMove * 0.22 + positionMove * 0.35 + next.playability * 0.08 - common * 0.7);
-        return { score, movement, common, bassMove };
+        const semitoneScore = Math.max(0, movement * 1.25 + bassMove * 0.22 + positionMove * 0.35 + next.playability * 0.08 - common * 0.7);
+        const score = fingerMovement;
+        return { score, semitoneScore, fingerMovement, movement, common, bassMove };
     }
 
     function diversifyInitial(voicings, limit = 8) {
@@ -412,13 +464,22 @@
         return visible;
     }
 
-    function rankVoicings(chord, kind, previous) {
+    function rankVoicings(chord, kind, previous, rankMode = "fingers") {
         const voicings = generateVoicings(chord, kind);
-        if (!previous) return addFamiliarFallback(diversifyInitial(voicings), voicings, null);
+        if (!previous) {
+            const firstChoices = diversifyInitial(voicings, 12);
+            const selected = new Set(firstChoices.map(voicing => voicing.frets.join(",")));
+            return [...firstChoices, ...voicings.filter(voicing => !selected.has(voicing.frets.join(",")))];
+        }
         const ranked = voicings
             .map(voicing => ({ ...voicing, metrics: voiceLeadMetrics(previous, voicing) }))
-            .sort((a, b) => a.metrics.score - b.metrics.score);
-        return addFamiliarFallback(ranked, voicings, previous);
+            .sort((a, b) => {
+                if (rankMode === "semitones") {
+                    return a.metrics.semitoneScore - b.metrics.semitoneScore || a.metrics.fingerMovement - b.metrics.fingerMovement;
+                }
+                return a.metrics.fingerMovement - b.metrics.fingerMovement || a.metrics.semitoneScore - b.metrics.semitoneScore;
+            });
+        return ranked;
     }
 
     function chooseChordScale(chord, key) {
@@ -510,25 +571,63 @@
         return voicing.frets.map((fret, index) => {
             if (fret < 0) return "";
             const pitchClass = mod(TUNING[index].pc + fret);
-            const chordInterval = pitchClass === chord.root ? "root" : intervalLabel(chord.root, pitchClass);
+            const chordInterval = chordIntervalLabel(chord, pitchClass);
             return `${noteName(pitchClass)}(${chordInterval})`;
         });
+    }
+
+    function outsideNoteUses(chords, key) {
+        return key.missingNotes.map(pc => ({
+            pc,
+            chords: [...new Set(chords
+                .filter(chord => chordPitchClasses(chord, "full").includes(pc))
+                .map(chord => chord.raw))]
+        }));
+    }
+
+    function naturalList(values) {
+        if (values.length < 2) return values[0] || "";
+        if (values.length === 2) return `${values[0]} and ${values[1]}`;
+        return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
+    }
+
+    function samePitchCollection(first, second) {
+        return first.scale.length === second.scale.length && first.scale.every(pc => second.scale.includes(pc));
+    }
+
+    function keyFitExplanation(best, matches, chords) {
+        if (best.missing === 0) return "Every note in the progression belongs to this scale.";
+
+        const flat = prefersFlats(best);
+        const uses = outsideNoteUses(chords, best);
+        const details = uses.map(use => `${noteName(use.pc, flat)} (used by ${naturalList(use.chords)})`);
+        const verb = best.missing === 1 ? "falls" : "fall";
+        let explanation = `${naturalList(details)} ${verb} outside ${best.name}.`;
+
+        const tiedAlternative = matches.find(candidate =>
+            candidate.name !== best.name &&
+            candidate.missing === best.missing &&
+            !samePitchCollection(candidate, best)
+        );
+        if (tiedAlternative) {
+            const alternativeUses = outsideNoteUses(chords, tiedAlternative);
+            const alternativeFlat = prefersFlats(tiedAlternative);
+            const alternativeDetails = alternativeUses.map(use => `${noteName(use.pc, alternativeFlat)} in ${naturalList(use.chords)}`);
+            explanation += ` ${tiedAlternative.name} is equally close by pitch count; its outside ${tiedAlternative.missing === 1 ? "note is" : "notes are"} ${naturalList(alternativeDetails)}.`;
+        }
+        return explanation;
     }
 
     function renderKeyPanel() {
         const best = state.key;
         const exact = best.missing === 0;
-        const flat = prefersFlats(best);
         const keyPanel = document.getElementById("key-panel");
         const badge = document.getElementById("fit-badge");
         document.getElementById("key-name").textContent = best.name;
         badge.textContent = exact ? "Exact fit" : `${best.missing} outside ${best.missing === 1 ? "note" : "notes"}`;
         badge.classList.toggle("is-near", !exact);
 
-        const missing = best.missingNotes.map(pc => noteName(pc, flat)).join(", ");
-        document.getElementById("key-explanation").textContent = exact
-            ? "Every note in the progression belongs to this scale."
-            : `Closest match: ${missing} ${best.missing === 1 ? "falls" : "fall"} outside the scale.`;
+        document.getElementById("key-explanation").textContent = keyFitExplanation(best, state.keyMatches, state.chords);
 
         const candidateContainer = document.getElementById("key-candidates");
         candidateContainer.replaceChildren();
@@ -579,6 +678,7 @@
                     state.currentIndex = index;
                     state.choices = state.choices.slice(0, index);
                     state.kinds = state.kinds.slice(0, index + 1);
+                    state.showAllVoicings = false;
                     document.getElementById("play-section").hidden = true;
                     renderPicker();
                 });
@@ -595,7 +695,8 @@
         const kind = state.kinds[index] || state.kinds[index - 1] || "triad";
         state.kinds[index] = kind;
         const previous = index > 0 ? state.choices[index - 1] : null;
-        const options = rankVoicings(chord, kind, previous);
+        const allOptions = rankVoicings(chord, kind, previous, state.rankMode);
+        const options = state.showAllVoicings ? allOptions : addFamiliarFallback(allOptions, allOptions, previous, 12);
         const fullCount = chordPitchClasses(chord, "full").length;
         const triadCount = chordPitchClasses(chord, "triad").length;
 
@@ -603,15 +704,27 @@
         document.getElementById("picker-chord").textContent = chord.raw;
         const selectedCount = kind === "triad" ? triadCount : fullCount;
         const sameToneCount = fullCount === triadCount;
+        const guideIntervals = chord.type.triad.map(interval => {
+            const label = chordIntervalLabel(chord, mod(chord.root + interval));
+            return label === "root" ? "1" : label;
+        }).join(" · ");
+        const toneSetName = fullCount === triadCount ? "Chord tones" : "Guide tones";
+        const noteSet = kind === "triad" ? ` ${toneSetName}: ${guideIntervals}.` : "";
         let guidance;
         if (kind === "full" && sameToneCount) {
             guidance = `${chord.raw} has ${fullCount} distinct chord tones, so both modes use the same notes here. All tones stays on and will include 7ths or extensions later.`;
         } else if (index === 0) {
             guidance = `Choose a ${selectedCount}-note starting shape that feels right. This mode carries through the progression.`;
         } else {
-            guidance = `These ${selectedCount}-note shapes are ordered by smoothness from ${state.chords[index - 1].raw}. This mode carries forward.`;
+            guidance = `These ${selectedCount}-note shapes are ordered by ${state.rankMode === "fingers" ? "estimated finger travel" : "semitone voice leading"} from ${state.chords[index - 1].raw}. This mode carries forward.`;
         }
-        document.getElementById("picker-guidance").textContent = guidance;
+        document.getElementById("picker-guidance").textContent = `${guidance}${noteSet}`;
+
+        const sortControl = document.getElementById("voicing-sort");
+        sortControl.hidden = !previous;
+        document.querySelectorAll("[data-rank-mode]").forEach(button => {
+            button.classList.toggle("is-active", button.dataset.rankMode === state.rankMode);
+        });
 
         document.querySelectorAll("[data-kind]").forEach(button => {
             const buttonKind = button.dataset.kind;
@@ -641,10 +754,10 @@
             const optionName = voicing.isFamiliarFallback ? "Familiar shape" : rankNames[optionIndex] || "Option";
             rank.append(
                 createElement("span", "", `${String(optionIndex + 1).padStart(2, "0")} · ${optionName}`),
-                createElement("b", "", previous ? metrics.score.toFixed(1) : "")
+                createElement("b", "", previous ? state.rankMode === "fingers" ? `${metrics.fingerMovement.toFixed(1)} move` : `${metrics.movement.toFixed(1)} st` : "")
             );
             const detail = previous
-                ? `${metrics.movement.toFixed(1)} semitones average · ${metrics.common} common ${metrics.common === 1 ? "tone" : "tones"}`
+                ? `${metrics.fingerMovement.toFixed(1)} finger steps average · ${metrics.movement.toFixed(1)} semitones average · ${metrics.common} common ${metrics.common === 1 ? "tone" : "tones"}`
                 : `${voicing.frets.filter(fret => fret >= 0).length} strings · ${voicing.span ? `${voicing.span}-fret span` : "no fret span"}`;
 
             button.append(
@@ -656,6 +769,11 @@
             button.addEventListener("click", () => selectVoicing(voicing, kind));
             grid.append(button);
         });
+
+        const showAllButton = document.getElementById("show-all-voicings");
+        showAllButton.hidden = allOptions.length <= 12;
+        showAllButton.textContent = state.showAllVoicings ? "Show top choices" : `Show all ${allOptions.length} voicings`;
+        showAllButton.setAttribute("aria-expanded", String(state.showAllVoicings));
 
         renderChordRail();
     }
@@ -669,6 +787,7 @@
 
         if (index < state.chords.length - 1) {
             state.currentIndex = index + 1;
+            state.showAllVoicings = false;
             renderPicker();
             document.getElementById("picker-shell").scrollIntoView({ behavior: "smooth", block: "start" });
         } else {
@@ -757,14 +876,14 @@
                     const dot = createElement("span", `note-dot ${colorClass}`);
                     dot.append(
                         document.createTextNode(noteName(pc)),
-                        createElement("small", "", `K${intervalLabel(state.key.tonic, pc)} · C${intervalLabel(chord.root, pc)}`)
+                        createElement("small", "", `K${intervalLabel(state.key.tonic, pc)} · C${chordIntervalLabel(chord, pc)}`)
                     );
                     if (isRouteTone) {
                         dot.append(createElement("b", "route-badge", routeIndexes.map(chordIndex => chordIndex + 1).join("·")));
                     }
                     const membership = inKey && inChordScale ? "home key and chord scale" : inKey ? "home key" : inChordScale ? "chord scale" : "route chord tone";
                     const routeNames = routeIndexes.map(chordIndex => `${chordIndex + 1} ${state.chords[chordIndex].raw}`).join(", ");
-                    dot.title = `${noteName(pc)} · key ${intervalLabel(state.key.tonic, pc)} · chord ${intervalLabel(chord.root, pc)} · ${membership}${isRouteTone ? ` · route: ${routeNames}` : ""}${isFocusedTone ? " · focused voicing" : ""}`;
+                    dot.title = `${noteName(pc)} · key ${intervalLabel(state.key.tonic, pc)} · chord ${chordIntervalLabel(chord, pc)} · ${membership}${isRouteTone ? ` · route: ${routeNames}` : ""}${isFocusedTone ? " · focused voicing" : ""}`;
                     marker.append(dot);
                     cell.append(marker);
                 }
@@ -788,6 +907,8 @@
             state.kinds = [];
             state.currentIndex = 0;
             state.inspectedIndex = 0;
+            state.rankMode = "fingers";
+            state.showAllVoicings = false;
 
             renderKeyPanel();
             document.getElementById("voicing-workspace").hidden = false;
@@ -820,9 +941,23 @@
                 if (state.kinds[state.currentIndex] === kind) return;
                 state.kinds[state.currentIndex] = kind;
                 state.choices = state.choices.slice(0, state.currentIndex);
+                state.showAllVoicings = false;
                 document.getElementById("play-section").hidden = true;
                 renderPicker();
             });
+        });
+
+        document.querySelectorAll("[data-rank-mode]").forEach(button => {
+            button.addEventListener("click", () => {
+                state.rankMode = button.dataset.rankMode;
+                state.showAllVoicings = false;
+                renderPicker();
+            });
+        });
+
+        document.getElementById("show-all-voicings").addEventListener("click", () => {
+            state.showAllVoicings = !state.showAllVoicings;
+            renderPicker();
         });
 
         document.querySelectorAll("[data-scale-view]").forEach(button => {
@@ -861,7 +996,11 @@
         voicingNoteLabels,
         soloScaleSets,
         routeColor,
-        routeRingGradient
+        routeRingGradient,
+        fingerTravel,
+        chordIntervalLabel,
+        outsideNoteUses,
+        keyFitExplanation
     };
 
     if (typeof module !== "undefined" && module.exports) module.exports = api;

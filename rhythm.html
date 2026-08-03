@@ -18,7 +18,7 @@
     <meta name="twitter:image" content="https://morelayers.ai/og-rhythm.png">
     <title>RhythmGuitar Hero</title>
     <link rel="stylesheet" href="rhythm.css?v=2">
-    <script defer src="rhythm.js?v=7"></script>
+    <script defer src="rhythm.js?v=9"></script>
 </head>
 <body>
     <header class="app-header">
@@ -80,7 +80,7 @@
                     <p class="section-label"><span>02</span> Build the route</p>
                     <h2>Pick a grip. We&rsquo;ll rank the next move.</h2>
                 </div>
-                <p class="workspace-note">Lower movement scores mean less travel. A familiar compact shape stays available even when it takes a bigger jump.</p>
+                <p class="workspace-note">Finger travel is the default rank. Every generated shape remains available, and semitone voice leading stays visible for comparison.</p>
             </div>
 
             <div class="chord-rail" id="chord-rail" aria-label="Progression steps"></div>
@@ -97,7 +97,13 @@
                     </div>
                 </div>
                 <p class="picker-guidance" id="picker-guidance">Choose the starting shape that feels right.</p>
+                <div class="voicing-sort" id="voicing-sort" role="group" aria-label="Rank voicings by" hidden>
+                    <span>Rank by</span>
+                    <button type="button" data-rank-mode="fingers" class="is-active">Finger travel</button>
+                    <button type="button" data-rank-mode="semitones">Semitone voice lead</button>
+                </div>
                 <div class="voicing-grid" id="voicing-grid"></div>
+                <button type="button" class="show-all-voicings" id="show-all-voicings" hidden>Show all voicings</button>
             </div>
         </section>
 
