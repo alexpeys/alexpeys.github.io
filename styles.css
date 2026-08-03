@@ -91,6 +91,21 @@ h1 {
   line-height: 1.55;
 }
 
+.app-link {
+  display: inline-block;
+  margin-right: 0.35rem;
+  color: var(--ink);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: var(--link);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.app-link span {
+  color: var(--link);
+}
+
 .portrait {
   margin: 0;
   justify-self: end;

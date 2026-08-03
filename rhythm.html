@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Turn a chord progression into natural guitar voicings, playable tab, and a solo-ready fretboard.">
+    <meta name="theme-color" content="#111217">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RhythmGuitar Hero">
+    <meta property="og:description" content="Chords in. Natural moves out.">
+    <meta property="og:url" content="https://morelayers.ai/rhythm.html">
+    <meta property="og:image" content="https://morelayers.ai/og-rhythm.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RhythmGuitar Hero">
+    <meta name="twitter:description" content="Chords in. Natural moves out.">
+    <meta name="twitter:image" content="https://morelayers.ai/og-rhythm.png">
+    <title>RhythmGuitar Hero</title>
+    <link rel="stylesheet" href="rhythm.css">
+    <script defer src="rhythm.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-link" href="index.html" aria-label="Back to Alex Peysakhovich's home page">
+            <span aria-hidden="true">&#8592;</span> alexpeys
+        </a>
+        <span class="header-mark" aria-hidden="true">RGH / 01</span>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="app-title">
+            <div class="hero-copy">
+                <p class="eyebrow">Chord map + voice-leading guide</p>
+                <h1 id="app-title">RhythmGuitar<br><em>Hero</em></h1>
+                <p class="lede">Name the changes. Choose your first grip. Get a natural path through every chord&mdash;then see exactly where the solo can go.</p>
+            </div>
+
+            <form class="progression-form" id="progression-form">
+                <label for="progression-input">Your chord progression</label>
+                <div class="input-row">
+                    <input
+                        id="progression-input"
+                        name="progression"
+                        value="Asus2 E B C#m7"
+                        placeholder="Asus2 E B C#m7"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-describedby="progression-help progression-error"
+                    >
+                    <button class="analyze-button" type="submit">Map it <span aria-hidden="true">&#8594;</span></button>
+                </div>
+                <div class="form-foot">
+                    <p id="progression-help">Spaces, commas, or bars work. Try slash chords and extensions too.</p>
+                    <div class="examples" aria-label="Example progressions">
+                        <button type="button" data-example="Am F C G">Am F C G</button>
+                        <button type="button" data-example="Dmaj7 Bm7 Em7 A7">Dmaj7 Bm7 Em7 A7</button>
+                    </div>
+                </div>
+                <p class="form-error" id="progression-error" role="alert"></p>
+            </form>
+        </section>
+
+        <section class="key-panel" id="key-panel" aria-live="polite" hidden>
+            <div class="section-number">01</div>
+            <div class="key-result">
+                <p class="section-label">Closest home key</p>
+                <div class="key-heading-row">
+                    <h2 id="key-name">E major</h2>
+                    <span class="fit-badge" id="fit-badge">Exact fit</span>
+                </div>
+                <p id="key-explanation"></p>
+            </div>
+            <div class="key-candidates" id="key-candidates" aria-label="Other likely keys"></div>
+        </section>
+
+        <section class="voicing-workspace" id="voicing-workspace" hidden>
+            <div class="workspace-heading">
+                <div>
+                    <p class="section-label"><span>02</span> Build the route</p>
+                    <h2>Pick a grip. We&rsquo;ll rank the next move.</h2>
+                </div>
+                <p class="workspace-note">Lower movement scores mean less travel between voices.</p>
+            </div>
+
+            <div class="chord-rail" id="chord-rail" aria-label="Progression steps"></div>
+
+            <div class="picker-shell" id="picker-shell">
+                <div class="picker-topline">
+                    <div>
+                        <p class="picker-step" id="picker-step">First chord</p>
+                        <h3 id="picker-chord">Asus2</h3>
+                    </div>
+                    <div class="voicing-kind" role="group" aria-label="Voicing size">
+                        <button type="button" data-kind="triad" class="is-active">Triad</button>
+                        <button type="button" data-kind="full">Full chord</button>
+                    </div>
+                </div>
+                <p class="picker-guidance" id="picker-guidance">Choose the starting shape that feels right.</p>
+                <div class="voicing-grid" id="voicing-grid"></div>
+            </div>
+        </section>
+
+        <section class="play-section" id="play-section" hidden>
+            <div class="play-heading">
+                <div>
+                    <p class="section-label"><span>03</span> Play the route</p>
+                    <h2>Your progression, under your fingers.</h2>
+                </div>
+                <button type="button" class="copy-tab" id="copy-tab">Copy tab</button>
+            </div>
+
+            <div class="tab-card">
+                <div class="card-kicker">One hit per chord</div>
+                <pre id="tab-output" tabindex="0" aria-label="Guitar tablature for the selected chord voicings"></pre>
+            </div>
+
+            <div class="fretboard-card">
+                <div class="fretboard-head">
+                    <div>
+                        <div class="card-kicker">Solo map</div>
+                        <h3 id="fretboard-title">Over Asus2</h3>
+                        <p id="scale-description"></p>
+                    </div>
+                    <div class="legend" aria-label="Fretboard legend">
+                        <span><i class="legend-dot key-only"></i> Home key</span>
+                        <span><i class="legend-dot chord-only"></i> Chord scale</span>
+                        <span><i class="legend-dot both"></i> Both</span>
+                        <span><i class="legend-dot selected"></i> Voicing</span>
+                    </div>
+                </div>
+                <div class="inspect-chords" id="inspect-chords" aria-label="Choose a chord to inspect"></div>
+                <div class="fretboard-scroll">
+                    <div class="fretboard" id="fretboard" aria-label="Interactive guitar fretboard"></div>
+                </div>
+                <p class="interval-key"><strong>K</strong> = interval from the home key &middot; <strong>C</strong> = interval from the current chord root</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>Standard tuning &middot; E A D G B E</span>
+        <span>Built for finding the next easy move.</span>
+    </footer>
+</body>
+</html>
