@@ -105,7 +105,9 @@
         inspectedIndex: 0,
         scaleView: "full",
         rankMode: "fingers",
-        showAllVoicings: false
+        showAllVoicings: false,
+        rootString: "any",
+        noSkippedStrings: false
     };
 
     function mod(value, divisor = 12) {
@@ -464,8 +466,25 @@
         return visible;
     }
 
-    function rankVoicings(chord, kind, previous, rankMode = "fingers") {
-        const voicings = generateVoicings(chord, kind);
+    function hasNoSkippedStrings(voicing) {
+        const playedStrings = voicing.frets
+            .map((fret, stringIndex) => fret >= 0 ? stringIndex : -1)
+            .filter(stringIndex => stringIndex >= 0);
+        if (!playedStrings.length) return false;
+        return playedStrings.at(-1) - playedStrings[0] + 1 === playedStrings.length;
+    }
+
+    function matchesVoicingFilters(voicing, chord, filters = {}) {
+        if (filters.noSkippedStrings && !hasNoSkippedStrings(voicing)) return false;
+        if (filters.rootString === undefined || filters.rootString === "any") return true;
+
+        const rootString = Number(filters.rootString);
+        const fret = voicing.frets[rootString];
+        return fret >= 0 && mod(TUNING[rootString].pc + fret) === chord.root;
+    }
+
+    function rankVoicings(chord, kind, previous, rankMode = "fingers", filters = {}) {
+        const voicings = generateVoicings(chord, kind).filter(voicing => matchesVoicingFilters(voicing, chord, filters));
         if (!previous) {
             const firstChoices = diversifyInitial(voicings, 12);
             const selected = new Set(firstChoices.map(voicing => voicing.frets.join(",")));
@@ -695,7 +714,8 @@
         const kind = state.kinds[index] || state.kinds[index - 1] || "triad";
         state.kinds[index] = kind;
         const previous = index > 0 ? state.choices[index - 1] : null;
-        const allOptions = rankVoicings(chord, kind, previous, state.rankMode);
+        const filters = { rootString: state.rootString, noSkippedStrings: state.noSkippedStrings };
+        const allOptions = rankVoicings(chord, kind, previous, state.rankMode, filters);
         const options = state.showAllVoicings ? allOptions : addFamiliarFallback(allOptions, allOptions, previous, 12);
         const fullCount = chordPitchClasses(chord, "full").length;
         const triadCount = chordPitchClasses(chord, "triad").length;
@@ -720,6 +740,9 @@
         }
         document.getElementById("picker-guidance").textContent = `${guidance}${noteSet}`;
 
+        document.getElementById("root-string-filter").value = state.rootString;
+        document.getElementById("no-skipped-strings").checked = state.noSkippedStrings;
+
         const sortControl = document.getElementById("voicing-sort");
         sortControl.hidden = !previous;
         document.querySelectorAll("[data-rank-mode]").forEach(button => {
@@ -739,7 +762,12 @@
         const grid = document.getElementById("voicing-grid");
         grid.replaceChildren();
         if (!options.length) {
-            grid.append(createElement("p", "empty-voicings", "No compact shape found in the first 15 frets. Try Triad / guide tones for this chord."));
+            const guideSetHasRoot = chordPitchClasses(chord, kind).includes(chord.root);
+            const rootFilterCannotApply = state.rootString !== "any" && !guideSetHasRoot;
+            const emptyMessage = rootFilterCannotApply
+                ? `${chord.raw}'s guide-tone set omits the root. Choose All tones or set Root string to Any.`
+                : "No generated voicings match these filters. Try Any root string or allow skipped strings.";
+            grid.append(createElement("p", "empty-voicings", emptyMessage));
         }
 
         const rankNames = previous ? ["Most natural", "Very smooth", "Very smooth", "Close move", "Close move", "Alternate", "Alternate", "Stretch"] : ["Easy anchor", "Open choice", "Low neck", "Compact", "Middle neck", "Alternate", "Higher color", "Upper neck"];
@@ -772,7 +800,7 @@
 
         const showAllButton = document.getElementById("show-all-voicings");
         showAllButton.hidden = allOptions.length <= 12;
-        showAllButton.textContent = state.showAllVoicings ? "Show top choices" : `Show all ${allOptions.length} voicings`;
+        showAllButton.textContent = state.showAllVoicings ? "Show top choices" : `Show all ${allOptions.length} matching voicings`;
         showAllButton.setAttribute("aria-expanded", String(state.showAllVoicings));
 
         renderChordRail();
@@ -909,6 +937,8 @@
             state.inspectedIndex = 0;
             state.rankMode = "fingers";
             state.showAllVoicings = false;
+            state.rootString = "any";
+            state.noSkippedStrings = false;
 
             renderKeyPanel();
             document.getElementById("voicing-workspace").hidden = false;
@@ -955,6 +985,18 @@
             });
         });
 
+        document.getElementById("root-string-filter").addEventListener("change", event => {
+            state.rootString = event.currentTarget.value;
+            state.showAllVoicings = false;
+            renderPicker();
+        });
+
+        document.getElementById("no-skipped-strings").addEventListener("change", event => {
+            state.noSkippedStrings = event.currentTarget.checked;
+            state.showAllVoicings = false;
+            renderPicker();
+        });
+
         document.getElementById("show-all-voicings").addEventListener("click", () => {
             state.showAllVoicings = !state.showAllVoicings;
             renderPicker();
@@ -999,6 +1041,8 @@
         routeRingGradient,
         fingerTravel,
         chordIntervalLabel,
+        hasNoSkippedStrings,
+        matchesVoicingFilters,
         outsideNoteUses,
         keyFitExplanation
     };

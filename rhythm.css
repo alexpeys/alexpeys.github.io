@@ -37,7 +37,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -49,6 +50,7 @@ a {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
+select:focus-visible,
 pre:focus-visible {
   outline: 3px solid var(--acid);
   outline-offset: 3px;
@@ -514,6 +516,56 @@ footer {
   margin: 14px 0 0;
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.voicing-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 20px;
+}
+
+.voicing-filters > label {
+  display: flex;
+  align-items: center;
+  border: 1px solid #454a57;
+  background: #13151a;
+}
+
+.voicing-filters > label > span {
+  padding: 0 11px;
+  color: #9b9da4;
+  font-size: 0.68rem;
+  font-weight: 720;
+}
+
+.voicing-filters select {
+  min-height: 39px;
+  padding: 0 32px 0 11px;
+  border: 0;
+  border-left: 1px solid #454a57;
+  border-radius: 0;
+  background: #20232c;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.no-skip-filter {
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.no-skip-filter input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--acid);
+}
+
+.no-skip-filter > span {
+  padding-right: 0 !important;
 }
 
 .voicing-sort {
@@ -1144,6 +1196,16 @@ footer {
 
   .voicing-sort {
     width: 100%;
+  }
+
+  .voicing-filters,
+  .voicing-filters > label {
+    width: 100%;
+  }
+
+  .voicing-filters select {
+    flex: 1;
+    min-width: 0;
   }
 
   .voicing-sort > span {

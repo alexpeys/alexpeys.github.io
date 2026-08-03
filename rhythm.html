@@ -18,7 +18,7 @@
     <meta name="twitter:image" content="https://morelayers.ai/og-rhythm.png">
     <title>RhythmGuitar Hero</title>
     <link rel="stylesheet" href="rhythm.css?v=2">
-    <script defer src="rhythm.js?v=9"></script>
+    <script defer src="rhythm.js?v=10"></script>
 </head>
 <body>
     <header class="app-header">
@@ -97,6 +97,24 @@
                     </div>
                 </div>
                 <p class="picker-guidance" id="picker-guidance">Choose the starting shape that feels right.</p>
+                <div class="voicing-filters" aria-label="Voicing filters">
+                    <label>
+                        <span>Root string</span>
+                        <select id="root-string-filter" title="Require the chord root to appear on this string.">
+                            <option value="any">Any root string</option>
+                            <option value="0">6 · Low E</option>
+                            <option value="1">5 · A</option>
+                            <option value="2">4 · D</option>
+                            <option value="3">3 · G</option>
+                            <option value="4">2 · B</option>
+                            <option value="5">1 · High E</option>
+                        </select>
+                    </label>
+                    <label class="no-skip-filter" title="Allow muted strings outside the grip, but none between its lowest and highest played strings.">
+                        <input type="checkbox" id="no-skipped-strings">
+                        <span>No skipped strings</span>
+                    </label>
+                </div>
                 <div class="voicing-sort" id="voicing-sort" role="group" aria-label="Rank voicings by" hidden>
                     <span>Rank by</span>
                     <button type="button" data-rank-mode="fingers" class="is-active">Finger travel</button>
