@@ -379,13 +379,39 @@
         return selected;
     }
 
+    function isFamiliarCompactShape(voicing) {
+        const activeStrings = voicing.frets
+            .map((fret, index) => fret >= 0 ? index : -1)
+            .filter(index => index >= 0);
+        if (!activeStrings.length) return false;
+        const usesAdjacentStrings = activeStrings[activeStrings.length - 1] - activeStrings[0] + 1 === activeStrings.length;
+        return usesAdjacentStrings && voicing.span <= 2;
+    }
+
+    function addFamiliarFallback(ranked, allVoicings, previous, limit = 8) {
+        const visible = ranked.slice(0, limit);
+        const signatures = new Set(visible.map(voicing => voicing.frets.join(",")));
+        const familiar = allVoicings
+            .filter(isFamiliarCompactShape)
+            .sort((a, b) => a.playability - b.playability)[0];
+
+        if (familiar && !signatures.has(familiar.frets.join(","))) {
+            visible.push({
+                ...familiar,
+                metrics: voiceLeadMetrics(previous, familiar),
+                isFamiliarFallback: true
+            });
+        }
+        return visible;
+    }
+
     function rankVoicings(chord, kind, previous) {
         const voicings = generateVoicings(chord, kind);
-        if (!previous) return diversifyInitial(voicings);
-        return voicings
+        if (!previous) return addFamiliarFallback(diversifyInitial(voicings), voicings, null);
+        const ranked = voicings
             .map(voicing => ({ ...voicing, metrics: voiceLeadMetrics(previous, voicing) }))
-            .sort((a, b) => a.metrics.score - b.metrics.score)
-            .slice(0, 8);
+            .sort((a, b) => a.metrics.score - b.metrics.score);
+        return addFamiliarFallback(ranked, voicings, previous);
     }
 
     function chooseChordScale(chord, key) {
@@ -505,7 +531,7 @@
         const chord = state.chords[index];
         if (!chord) return;
 
-        const kind = state.kinds[index] || "triad";
+        const kind = state.kinds[index] || state.kinds[index - 1] || "triad";
         state.kinds[index] = kind;
         const previous = index > 0 ? state.choices[index - 1] : null;
         const options = rankVoicings(chord, kind, previous);
@@ -514,9 +540,17 @@
 
         document.getElementById("picker-step").textContent = index === 0 ? "First chord · choose your anchor" : `Chord ${index + 1} · ranked from your last shape`;
         document.getElementById("picker-chord").textContent = chord.raw;
-        document.getElementById("picker-guidance").textContent = index === 0
-            ? `Choose a ${kind === "triad" ? triadCount : fullCount}-note starting shape that feels right.`
-            : `These ${kind === "triad" ? triadCount : fullCount}-note shapes are ordered by smoothness from ${state.chords[index - 1].raw}.`;
+        const selectedCount = kind === "triad" ? triadCount : fullCount;
+        const sameToneCount = fullCount === triadCount;
+        let guidance;
+        if (kind === "full" && sameToneCount) {
+            guidance = `${chord.raw} has ${fullCount} distinct chord tones, so its full voicings match the triads. Full mode stays on and will add 7ths or extensions later.`;
+        } else if (index === 0) {
+            guidance = `Choose a ${selectedCount}-note starting shape that feels right. This mode carries through the progression.`;
+        } else {
+            guidance = `These ${selectedCount}-note shapes are ordered by smoothness from ${state.chords[index - 1].raw}. This mode carries forward.`;
+        }
+        document.getElementById("picker-guidance").textContent = guidance;
 
         document.querySelectorAll("[data-kind]").forEach(button => {
             const buttonKind = button.dataset.kind;
@@ -543,8 +577,9 @@
             button.setAttribute("aria-label", `Choose ${chord.raw} voicing ${voicing.frets.map(fret => fret < 0 ? "muted" : fret).join(", ")}`);
 
             const rank = createElement("div", "option-rank");
+            const optionName = voicing.isFamiliarFallback ? "Familiar shape" : rankNames[optionIndex] || "Option";
             rank.append(
-                createElement("span", "", `${String(optionIndex + 1).padStart(2, "0")} · ${rankNames[optionIndex] || "Option"}`),
+                createElement("span", "", `${String(optionIndex + 1).padStart(2, "0")} · ${optionName}`),
                 createElement("b", "", previous ? metrics.score.toFixed(1) : "")
             );
             const detail = previous
@@ -730,7 +765,8 @@
         voiceLeadMetrics,
         chooseChordScale,
         buildTab,
-        describePosition
+        describePosition,
+        rankVoicings
     };
 
     if (typeof module !== "undefined" && module.exports) module.exports = api;
