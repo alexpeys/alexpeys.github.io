@@ -440,7 +440,7 @@ footer {
   bottom: 0;
   left: 0;
   height: 3px;
-  background: var(--acid);
+  background: var(--chord-color, var(--acid));
   content: "";
 }
 
@@ -450,7 +450,7 @@ footer {
 }
 
 .rail-chord.is-picked small {
-  color: var(--acid);
+  color: var(--chord-color, var(--acid));
 }
 
 .picker-shell {
@@ -700,6 +700,43 @@ footer {
   font-size: 0.67rem;
 }
 
+.fretboard-tools {
+  display: grid;
+  justify-items: end;
+  gap: 16px;
+}
+
+.scale-view {
+  display: flex;
+  align-items: center;
+  border: 1px solid #424753;
+}
+
+.scale-view > span {
+  padding: 0 10px;
+  color: #7f838d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scale-view button {
+  padding: 8px 11px;
+  border: 0;
+  border-left: 1px solid #424753;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.66rem;
+  font-weight: 740;
+}
+
+.scale-view button.is-active {
+  background: var(--ink);
+  color: var(--bg);
+}
+
 .legend span {
   display: flex;
   gap: 6px;
@@ -726,10 +763,10 @@ footer {
   background: linear-gradient(135deg, var(--blue) 0 48%, var(--red) 52% 100%);
 }
 
-.legend-dot.selected {
-  border-color: var(--gold);
-  background: transparent;
-  box-shadow: 0 0 0 2px var(--gold);
+.legend-dot.route {
+  border: 2px solid transparent;
+  background: linear-gradient(#181a21, #181a21) padding-box,
+    conic-gradient(#f3c861 0 25%, #77d6b3 25% 50%, #b99cff 50% 75%, #ff8a70 75%) border-box;
 }
 
 .inspect-chords {
@@ -742,7 +779,7 @@ footer {
 .inspect-chords button {
   flex: 0 0 auto;
   padding: 8px 13px;
-  border: 1px solid #424753;
+  border: 1px solid var(--chord-color, #424753);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -750,9 +787,9 @@ footer {
 }
 
 .inspect-chords button.is-active {
-  border-color: var(--acid);
-  background: rgba(216, 245, 106, 0.1);
-  color: var(--acid);
+  background: #292c35;
+  color: var(--ink);
+  box-shadow: inset 0 -3px var(--chord-color);
 }
 
 .fretboard-scroll {
@@ -817,6 +854,25 @@ footer {
   content: "";
 }
 
+.note-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.note-marker.is-route-tone {
+  background: var(--route-ring);
+  box-shadow: 0 0 0 2px #111217;
+}
+
+.note-marker.has-focus {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.34));
+}
+
 .note-dot {
   position: relative;
   z-index: 1;
@@ -852,13 +908,28 @@ footer {
   background: var(--red);
 }
 
+.note-dot.selected-only {
+  background: #292c35;
+}
+
 .note-dot.both {
   background: linear-gradient(135deg, var(--blue) 0 48%, var(--red) 52% 100%);
 }
 
-.note-dot.is-selected {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px #111217, 0 0 0 4px var(--gold);
+.route-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 18px;
+  padding: 3px 4px;
+  border: 1px solid #111217;
+  border-radius: 999px;
+  background: #111217;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.48rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .interval-key {
@@ -924,6 +995,10 @@ footer {
 
   .legend {
     justify-content: flex-start;
+  }
+
+  .fretboard-tools {
+    justify-items: start;
   }
 }
 
@@ -1015,6 +1090,15 @@ footer {
 
   .play-heading .copy-tab {
     align-self: flex-start;
+  }
+
+  .fretboard-tools,
+  .scale-view {
+    width: 100%;
+  }
+
+  .scale-view button {
+    flex: 1;
   }
 
   footer {

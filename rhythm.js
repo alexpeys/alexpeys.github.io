@@ -51,6 +51,12 @@
     const INTERVAL_LABELS = ["1", "♭2", "2", "♭3", "3", "4", "♭5", "5", "♭6", "6", "♭7", "7"];
     const MAJOR_INTERVALS = [0, 2, 4, 5, 7, 9, 11];
     const MINOR_INTERVALS = [0, 2, 3, 5, 7, 8, 10];
+    const MAJOR_PENTATONIC = [0, 2, 4, 7, 9];
+    const MINOR_PENTATONIC = [0, 3, 5, 7, 10];
+    const ROUTE_COLORS = [
+        "#f3c861", "#77d6b3", "#b99cff", "#ff8a70", "#72c7ff", "#f58fbd",
+        "#b8df69", "#ffb45f", "#90a7ff", "#d39ae8", "#64d8d0", "#ff7f96"
+    ];
     const MAJOR_FAMILIES = ["major", "minor", "minor", "major", "major", "minor", "dim"];
     const MINOR_FAMILIES = ["minor", "dim", "major", "minor", "minor", "major", "major"];
     const TUNING = [
@@ -96,7 +102,8 @@
         choices: [],
         kinds: [],
         currentIndex: 0,
-        inspectedIndex: 0
+        inspectedIndex: 0,
+        scaleView: "full"
     };
 
     function mod(value, divisor = 12) {
@@ -433,6 +440,48 @@
         }).sort((a, b) => a.score - b.score)[0];
     }
 
+    function soloScaleSets(chord, key, view = "full") {
+        const fullChordScale = chooseChordScale(chord, key);
+        if (view !== "pentatonic") {
+            return {
+                keyScale: key.scale,
+                chordScale: fullChordScale.scale,
+                chordScaleName: `${noteName(chord.root)} ${fullChordScale.name}`,
+                overlap: fullChordScale.overlap,
+                total: 7
+            };
+        }
+
+        const keyIntervals = key.mode === "minor" ? MINOR_PENTATONIC : MAJOR_PENTATONIC;
+        const chordIsMinor = ["minor", "dim"].includes(chord.type.family);
+        const chordIntervals = chordIsMinor ? MINOR_PENTATONIC : MAJOR_PENTATONIC;
+        const keyScale = keyIntervals.map(interval => mod(key.tonic + interval));
+        const chordScale = chordIntervals.map(interval => mod(chord.root + interval));
+        const overlap = chordScale.filter(pc => keyScale.includes(pc)).length;
+
+        return {
+            keyScale,
+            chordScale,
+            chordScaleName: `${noteName(chord.root)} ${chordIsMinor ? "minor" : "major"} pentatonic`,
+            overlap,
+            total: 5
+        };
+    }
+
+    function routeColor(index) {
+        return ROUTE_COLORS[index % ROUTE_COLORS.length];
+    }
+
+    function routeRingGradient(indexes) {
+        const segment = 100 / indexes.length;
+        const stops = indexes.map((index, position) => {
+            const start = (position * segment).toFixed(2);
+            const end = ((position + 1) * segment).toFixed(2);
+            return `${routeColor(index)} ${start}% ${end}%`;
+        });
+        return `conic-gradient(${stops.join(", ")})`;
+    }
+
     function buildTab(chords, choices) {
         const width = Math.max(9, ...chords.map(chord => chord.raw.length + 4));
         const heading = "   " + chords.map(chord => chord.raw.padStart(Math.floor((width + chord.raw.length) / 2)).padEnd(width)).join("");
@@ -517,6 +566,7 @@
             const current = index === state.currentIndex;
             const button = createElement("button", `rail-chord${picked ? " is-picked" : ""}${current ? " is-current" : ""}`);
             button.type = "button";
+            button.style.setProperty("--chord-color", routeColor(index));
             button.disabled = !picked || current;
             button.append(
                 createElement("span", "", String(index + 1).padStart(2, "0")),
@@ -634,8 +684,9 @@
         const chordButtons = document.getElementById("inspect-chords");
         chordButtons.replaceChildren();
         state.chords.forEach((chord, index) => {
-            const button = createElement("button", index === state.inspectedIndex ? "is-active" : "", chord.raw);
+            const button = createElement("button", index === state.inspectedIndex ? "is-active" : "", `${String(index + 1).padStart(2, "0")} ${chord.raw}`);
             button.type = "button";
+            button.style.setProperty("--chord-color", routeColor(index));
             button.addEventListener("click", () => {
                 state.inspectedIndex = index;
                 renderFretboard();
@@ -650,10 +701,17 @@
         const index = Math.min(state.inspectedIndex, state.chords.length - 1);
         state.inspectedIndex = index;
         const chord = state.chords[index];
-        const voicing = state.choices[index];
-        const chordScale = chooseChordScale(chord, state.key);
-        const selectedByString = new Map(voicing.frets.map((fret, stringIndex) => [stringIndex, fret]));
-        const soundedFrets = voicing.frets.filter(fret => fret >= 0);
+        const scales = soloScaleSets(chord, state.key, state.scaleView);
+        const routeByPosition = new Map();
+        state.choices.forEach((choice, chordIndex) => {
+            choice.frets.forEach((fret, stringIndex) => {
+                if (fret < 0) return;
+                const position = `${stringIndex}:${fret}`;
+                if (!routeByPosition.has(position)) routeByPosition.set(position, []);
+                routeByPosition.get(position).push(chordIndex);
+            });
+        });
+        const soundedFrets = state.choices.flatMap(choice => choice.frets).filter(fret => fret >= 0);
         const positive = soundedFrets.filter(fret => fret > 0);
         const containsOpen = soundedFrets.includes(0);
         let startFret = containsOpen ? 0 : Math.max(0, (positive.length ? Math.min(...positive) : 1) - 2);
@@ -662,8 +720,14 @@
         const frets = [];
         for (let fret = startFret; fret <= endFret; fret += 1) frets.push(fret);
 
-        document.getElementById("fretboard-title").textContent = `Over ${chord.raw}`;
-        document.getElementById("scale-description").textContent = `${noteName(chord.root)} ${chordScale.name} is the closest chord-rooted scale to ${state.key.name}: ${chordScale.overlap}/7 notes overlap.`;
+        document.getElementById("fretboard-title").textContent = `Route map · focus ${chord.raw}`;
+        document.getElementById("scale-description").textContent = state.scaleView === "pentatonic"
+            ? `${scales.chordScaleName} against ${state.key.name} pentatonic: ${scales.overlap}/${scales.total} notes overlap.`
+            : `${scales.chordScaleName} is the closest chord-rooted scale to ${state.key.name}: ${scales.overlap}/${scales.total} notes overlap.`;
+
+        document.querySelectorAll("[data-scale-view]").forEach(button => {
+            button.classList.toggle("is-active", button.dataset.scaleView === state.scaleView);
+        });
 
         document.querySelectorAll("#inspect-chords button").forEach((button, buttonIndex) => {
             button.classList.toggle("is-active", buttonIndex === index);
@@ -680,20 +744,29 @@
             frets.forEach(fret => {
                 const cell = createElement("div", "fret-cell");
                 const pc = mod(TUNING[stringIndex].pc + fret);
-                const inKey = state.key.scale.includes(pc);
-                const inChordScale = chordScale.scale.includes(pc);
-                const selected = selectedByString.get(stringIndex) === fret;
+                const inKey = scales.keyScale.includes(pc);
+                const inChordScale = scales.chordScale.includes(pc);
+                const routeIndexes = routeByPosition.get(`${stringIndex}:${fret}`) || [];
+                const isRouteTone = routeIndexes.length > 0;
+                const isFocusedTone = routeIndexes.includes(index);
 
-                if (inKey || inChordScale || selected) {
-                    const colorClass = inKey && inChordScale ? "both" : inKey ? "key-only" : "chord-only";
-                    const dot = createElement("span", `note-dot ${colorClass}${selected ? " is-selected" : ""}`);
+                if (inKey || inChordScale || isRouteTone) {
+                    const colorClass = inKey && inChordScale ? "both" : inKey ? "key-only" : inChordScale ? "chord-only" : "selected-only";
+                    const marker = createElement("span", `note-marker${isRouteTone ? " is-route-tone" : ""}${isFocusedTone ? " has-focus" : ""}`);
+                    if (isRouteTone) marker.style.setProperty("--route-ring", routeRingGradient(routeIndexes));
+                    const dot = createElement("span", `note-dot ${colorClass}`);
                     dot.append(
                         document.createTextNode(noteName(pc)),
                         createElement("small", "", `K${intervalLabel(state.key.tonic, pc)} · C${intervalLabel(chord.root, pc)}`)
                     );
-                    const membership = inKey && inChordScale ? "home key and chord scale" : inKey ? "home key" : "chord scale";
-                    dot.title = `${noteName(pc)} · key ${intervalLabel(state.key.tonic, pc)} · chord ${intervalLabel(chord.root, pc)} · ${membership}${selected ? " · selected voicing" : ""}`;
-                    cell.append(dot);
+                    if (isRouteTone) {
+                        dot.append(createElement("b", "route-badge", routeIndexes.map(chordIndex => chordIndex + 1).join("·")));
+                    }
+                    const membership = inKey && inChordScale ? "home key and chord scale" : inKey ? "home key" : inChordScale ? "chord scale" : "route chord tone";
+                    const routeNames = routeIndexes.map(chordIndex => `${chordIndex + 1} ${state.chords[chordIndex].raw}`).join(", ");
+                    dot.title = `${noteName(pc)} · key ${intervalLabel(state.key.tonic, pc)} · chord ${intervalLabel(chord.root, pc)} · ${membership}${isRouteTone ? ` · route: ${routeNames}` : ""}${isFocusedTone ? " · focused voicing" : ""}`;
+                    marker.append(dot);
+                    cell.append(marker);
                 }
                 board.append(cell);
             });
@@ -752,6 +825,13 @@
             });
         });
 
+        document.querySelectorAll("[data-scale-view]").forEach(button => {
+            button.addEventListener("click", () => {
+                state.scaleView = button.dataset.scaleView;
+                if (!document.getElementById("play-section").hidden) renderFretboard();
+            });
+        });
+
         document.getElementById("copy-tab").addEventListener("click", async event => {
             const button = event.currentTarget;
             try {
@@ -778,7 +858,10 @@
         buildTab,
         describePosition,
         rankVoicings,
-        voicingNoteLabels
+        voicingNoteLabels,
+        soloScaleSets,
+        routeColor,
+        routeRingGradient
     };
 
     if (typeof module !== "undefined" && module.exports) module.exports = api;

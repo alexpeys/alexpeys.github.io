@@ -18,7 +18,7 @@
     <meta name="twitter:image" content="https://morelayers.ai/og-rhythm.png">
     <title>RhythmGuitar Hero</title>
     <link rel="stylesheet" href="rhythm.css">
-    <script defer src="rhythm.js?v=5"></script>
+    <script defer src="rhythm.js?v=7"></script>
 </head>
 <body>
     <header class="app-header">
@@ -119,21 +119,28 @@
                 <div class="fretboard-head">
                     <div>
                         <div class="card-kicker">Solo map</div>
-                        <h3 id="fretboard-title">Over Asus2</h3>
+                        <h3 id="fretboard-title">Route map &middot; focus Asus2</h3>
                         <p id="scale-description"></p>
                     </div>
-                    <div class="legend" aria-label="Fretboard legend">
-                        <span><i class="legend-dot key-only"></i> Home key</span>
-                        <span><i class="legend-dot chord-only"></i> Chord scale</span>
-                        <span><i class="legend-dot both"></i> Both</span>
-                        <span><i class="legend-dot selected"></i> Voicing</span>
+                    <div class="fretboard-tools">
+                        <div class="scale-view" role="group" aria-label="Solo scale note set">
+                            <span>Show</span>
+                            <button type="button" data-scale-view="full" class="is-active">Full scale</button>
+                            <button type="button" data-scale-view="pentatonic">Pentatonic</button>
+                        </div>
+                        <div class="legend" aria-label="Fretboard legend">
+                            <span><i class="legend-dot key-only"></i> Home key</span>
+                            <span><i class="legend-dot chord-only"></i> Chord scale</span>
+                            <span><i class="legend-dot both"></i> Both</span>
+                            <span><i class="legend-dot route"></i> Chord-color grip</span>
+                        </div>
                     </div>
                 </div>
                 <div class="inspect-chords" id="inspect-chords" aria-label="Choose a chord to inspect"></div>
                 <div class="fretboard-scroll">
                     <div class="fretboard" id="fretboard" aria-label="Interactive guitar fretboard"></div>
                 </div>
-                <p class="interval-key"><strong>K</strong> = interval from the home key &middot; <strong>C</strong> = interval from the current chord root</p>
+                <p class="interval-key"><strong>K</strong> = interval from the home key &middot; <strong>C</strong> = interval from the focused chord root &middot; Number badge = chord step</p>
             </div>
         </section>
     </main>
