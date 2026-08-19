@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Typeset a banner using protein structures folded into letters.">
+  <title>Protein Font</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f4f7fb;
+      --muted: #9ca8b8;
+      --blue: #4c86ff;
+      --blue-light: #91b5ff;
+      --panel: #111820;
+      --line: #263442;
+      --paper: #fff;
+      --glyph-height: 146px;
+      --tracking: -8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 5%, rgba(76, 134, 255, .16), transparent 28rem),
+        #080c11;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 52px 0 64px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--blue-light);
+      font-size: .75rem;
+      font-weight: 750;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 8vw, 6.4rem);
+      font-weight: 780;
+      letter-spacing: -.065em;
+      line-height: .88;
+    }
+
+    .intro {
+      width: min(410px, 100%);
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    a { color: var(--blue-light); }
+    a:hover { color: #c3d6ff; }
+
+    .studio {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(17, 24, 32, .92);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto auto;
+      align-items: end;
+      gap: 18px;
+      padding: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    label, .control-label {
+      display: block;
+      margin: 0 0 7px;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 720;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 76px;
+      resize: vertical;
+      border: 1px solid #34475a;
+      border-radius: 10px;
+      outline: none;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: #0a1016;
+      font: 600 1.05rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .03em;
+    }
+
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(76, 134, 255, .16);
+    }
+
+    .sliders {
+      display: grid;
+      grid-template-columns: repeat(2, 126px);
+      gap: 12px;
+    }
+
+    .slider-value {
+      float: right;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    button {
+      min-height: 44px;
+      border: 1px solid #6d9cff;
+      border-radius: 10px;
+      padding: 0 17px;
+      color: #061126;
+      background: #86adff;
+      font: inherit;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    button:hover { background: #a5c2ff; }
+    button:focus-visible { outline: 3px solid rgba(134, 173, 255, .38); outline-offset: 2px; }
+
+    .preview-wrap {
+      min-height: 360px;
+      padding: clamp(12px, 3vw, 34px);
+      background:
+        linear-gradient(45deg, #eef1f5 25%, transparent 25%) 0 0 / 18px 18px,
+        linear-gradient(-45deg, #eef1f5 25%, transparent 25%) 0 9px / 18px 18px,
+        linear-gradient(45deg, transparent 75%, #eef1f5 75%) 9px -9px / 18px 18px,
+        linear-gradient(-45deg, transparent 75%, #eef1f5 75%) -9px 0 / 18px 18px,
+        #f8f9fb;
+    }
+
+    #banner {
+      display: flex;
+      min-height: 292px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      overflow-x: auto;
+      border: 1px solid #dde3ea;
+      border-radius: 11px;
+      padding: 28px;
+      color: #10203d;
+      background: var(--paper);
+      box-shadow: 0 10px 32px rgba(25, 40, 58, .12);
+    }
+
+    .protein-line {
+      display: flex;
+      min-width: max-content;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .glyph {
+      display: block;
+      width: auto;
+      height: var(--glyph-height);
+      margin-right: var(--tracking);
+      mix-blend-mode: multiply;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .word-space { flex: 0 0 calc(var(--glyph-height) * .42); }
+
+    .empty-line {
+      height: calc(var(--glyph-height) * .36);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 20px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .status { color: #b9c7d8; }
+
+    @media (max-width: 800px) {
+      .shell { padding-top: 34px; }
+      header { align-items: start; flex-direction: column; }
+      .controls { grid-template-columns: 1fr; }
+      .sliders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .controls button { width: 100%; }
+      .footer-row { flex-direction: column; }
+      #banner { justify-content: flex-start; min-height: 250px; padding: 20px; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .glyph { animation: settle .28s ease both; }
+      @keyframes settle {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">A folded alphabet</p>
+        <h1>Protein Font</h1>
+      </div>
+      <p class="intro">
+        Type with 26 computationally designed proteins, each independently folded and rendered as a blue molecular cartoon. Built with
+        <a href="https://github.com/alexpeys/shape2prot">shape2prot</a>.
+      </p>
+    </header>
+
+    <section class="studio" aria-labelledby="studio-title">
+      <h2 id="studio-title" hidden>Protein font banner generator</h2>
+      <div class="controls">
+        <div>
+          <label for="text">Banner text</label>
+          <textarea id="text" rows="2" maxlength="80" spellcheck="false">PROTEINS ARE COOL</textarea>
+        </div>
+        <div class="sliders">
+          <div>
+            <label for="size">Size <span class="slider-value" id="size-value">146</span></label>
+            <input id="size" type="range" min="72" max="220" value="146">
+          </div>
+          <div>
+            <label for="tracking">Spacing <span class="slider-value" id="tracking-value">−8</span></label>
+            <input id="tracking" type="range" min="-24" max="32" value="-8">
+          </div>
+        </div>
+        <button id="download" type="button">Download PNG</button>
+      </div>
+
+      <div class="preview-wrap">
+        <div id="banner" role="img" aria-live="polite" aria-label="Protein font preview"></div>
+      </div>
+
+      <div class="footer-row">
+        <span>A–Z, spaces, and line breaks are supported.</span>
+        <span class="status" id="status">26 protein structures ready</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const GLYPH_DIR = "font/";
+      const input = document.querySelector("#text");
+      const banner = document.querySelector("#banner");
+      const size = document.querySelector("#size");
+      const tracking = document.querySelector("#tracking");
+      const sizeValue = document.querySelector("#size-value");
+      const trackingValue = document.querySelector("#tracking-value");
+      const download = document.querySelector("#download");
+      const status = document.querySelector("#status");
+      const imageCache = new Map();
+
+      function normalizedText() {
+        return input.value.toUpperCase().replace(/[^A-Z \n]/g, "");
+      }
+
+      function glyphPath(letter) {
+        return `${GLYPH_DIR}${letter}.png`;
+      }
+
+      function render() {
+        const text = normalizedText() || " ";
+        const fragment = document.createDocumentFragment();
+        for (const [lineIndex, textLine] of text.split("\n").entries()) {
+          const line = document.createElement("div");
+          line.className = `protein-line${textLine ? "" : " empty-line"}`;
+          for (const [index, character] of [...textLine].entries()) {
+            if (character === " ") {
+              const spacer = document.createElement("span");
+              spacer.className = "word-space";
+              spacer.setAttribute("aria-hidden", "true");
+              line.append(spacer);
+              continue;
+            }
+            const image = document.createElement("img");
+            image.className = "glyph";
+            image.src = glyphPath(character);
+            image.alt = character;
+            image.decoding = "async";
+            image.style.animationDelay = `${Math.min(index * 18 + lineIndex * 30, 280)}ms`;
+            line.append(image);
+          }
+          fragment.append(line);
+        }
+        banner.replaceChildren(fragment);
+        banner.setAttribute("aria-label", `Protein font preview: ${text.trim() || "blank"}`);
+      }
+
+      function updateControls() {
+        document.documentElement.style.setProperty("--glyph-height", `${size.value}px`);
+        document.documentElement.style.setProperty("--tracking", `${tracking.value}px`);
+        sizeValue.textContent = size.value;
+        trackingValue.textContent = Number(tracking.value) < 0 ? `−${Math.abs(Number(tracking.value))}` : tracking.value;
+      }
+
+      function loadGlyph(letter) {
+        if (!imageCache.has(letter)) {
+          imageCache.set(letter, new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error(`Could not load ${letter}`));
+            image.src = glyphPath(letter);
+          }));
+        }
+        return imageCache.get(letter);
+      }
+
+      async function downloadBanner() {
+        const text = normalizedText().trimEnd();
+        if (!text.trim()) {
+          input.focus();
+          return;
+        }
+        download.disabled = true;
+        status.textContent = "Rendering high-resolution banner…";
+        try {
+          const letters = [...new Set(text.replace(/[^A-Z]/g, ""))];
+          const loaded = Object.fromEntries(await Promise.all(letters.map(async letter => [letter, await loadGlyph(letter)])));
+          const glyphHeight = 300;
+          const scale = glyphHeight / Number(size.value);
+          const gap = Number(tracking.value) * scale;
+          const space = glyphHeight * .42;
+          const lineGap = 18;
+          const padding = 64;
+          const lines = text.split("\n");
+          const widths = lines.map(line => [...line].reduce((total, character) => {
+            if (character === " ") return total + space;
+            const image = loaded[character];
+            return total + glyphHeight * image.naturalWidth / image.naturalHeight + gap;
+          }, 0));
+          let canvasWidth = Math.max(...widths, 1) + 2 * padding;
+          let canvasHeight = lines.length * glyphHeight + (lines.length - 1) * lineGap + 2 * padding;
+          const fit = Math.min(1, 8192 / canvasWidth, 8192 / canvasHeight);
+          canvasWidth = Math.max(1, Math.ceil(canvasWidth * fit));
+          canvasHeight = Math.max(1, Math.ceil(canvasHeight * fit));
+          const canvas = document.createElement("canvas");
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
+          const context = canvas.getContext("2d");
+          context.scale(fit, fit);
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvasWidth / fit, canvasHeight / fit);
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = "high";
+          lines.forEach((line, lineIndex) => {
+            let x = padding + (Math.max(...widths) - widths[lineIndex]) / 2;
+            const y = padding + lineIndex * (glyphHeight + lineGap);
+            for (const character of line) {
+              if (character === " ") {
+                x += space;
+                continue;
+              }
+              const image = loaded[character];
+              const width = glyphHeight * image.naturalWidth / image.naturalHeight;
+              context.drawImage(image, x, y, width, glyphHeight);
+              x += width + gap;
+            }
+          });
+          const link = document.createElement("a");
+          link.download = `${text.trim().replace(/\s+/g, "-").toLowerCase()}-protein-font.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+          status.textContent = `${canvasWidth} × ${canvasHeight} PNG downloaded`;
+        } catch (error) {
+          console.error(error);
+          status.textContent = "The banner could not be rendered";
+        } finally {
+          download.disabled = false;
+        }
+      }
+
+      input.addEventListener("input", render);
+      size.addEventListener("input", () => { updateControls(); render(); });
+      tracking.addEventListener("input", () => { updateControls(); render(); });
+      download.addEventListener("click", downloadBanner);
+      updateControls();
+      render();
+      for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") loadGlyph(letter);
+    })();
+  </script>
+</body>
+</html>
