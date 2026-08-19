@@ -15,8 +15,8 @@
       --panel: #111820;
       --line: #263442;
       --paper: #fff;
-      --glyph-height: 146px;
-      --tracking: -8px;
+      --glyph-height: 93px;
+      --tracking: -1px;
     }
 
     * { box-sizing: border-box; }
@@ -215,6 +215,80 @@
 
     .status { color: #b9c7d8; }
 
+    .how {
+      margin-top: 26px;
+      padding: clamp(24px, 4vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(76, 134, 255, .09), transparent 46%),
+        rgba(17, 24, 32, .78);
+    }
+
+    .how-heading {
+      display: grid;
+      grid-template-columns: minmax(240px, .7fr) minmax(300px, 1.3fr);
+      gap: 32px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .how h2 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    .how-summary {
+      margin: 0;
+      color: #bec9d7;
+      font-size: 1.02rem;
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .how-step {
+      min-height: 210px;
+      padding: 20px;
+      border: 1px solid #2b3b4c;
+      border-radius: 13px;
+      background: rgba(8, 13, 18, .68);
+    }
+
+    .step-number {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 20px;
+      place-items: center;
+      border: 1px solid #618fe9;
+      border-radius: 50%;
+      color: #bad0ff;
+      font: 750 .8rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .how-step h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .how-step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .how-note {
+      margin: 22px 0 0;
+      color: #8190a3;
+      font-size: .82rem;
+    }
+
     @media (max-width: 800px) {
       .shell { padding-top: 34px; }
       header { align-items: start; flex-direction: column; }
@@ -223,6 +297,8 @@
       .controls button { width: 100%; }
       .footer-row { flex-direction: column; }
       #banner { justify-content: flex-start; min-height: 250px; padding: 20px; }
+      .how-heading, .how-steps { grid-template-columns: 1fr; }
+      .how-step { min-height: 0; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -278,6 +354,44 @@
         <span>A–Z, spaces, and line breaks are supported.</span>
         <span class="status" id="status">26 protein structures ready</span>
       </div>
+    </section>
+
+    <section class="how" aria-labelledby="how-title">
+      <div class="how-heading">
+        <div>
+          <p class="eyebrow">Under the hood</p>
+          <h2 id="how-title">How Was This Made?</h2>
+        </div>
+        <p class="how-summary">
+          <a href="https://biohub.ai/models/esmfold2">ESM-Fold2</a> is a protein-structure
+          prediction model: give it an amino-acid sequence, and it predicts the three-dimensional
+          structure that sequence may adopt. For this alphabet, we use that process in reverse.
+        </p>
+      </div>
+
+      <div class="how-steps">
+        <article class="how-step">
+          <span class="step-number">01</span>
+          <h3>Start with a target shape</h3>
+          <p>Each letter is converted into a target three-dimensional backbone trace—the structure we want a protein to resemble.</p>
+        </article>
+        <article class="how-step">
+          <span class="step-number">02</span>
+          <h3>Optimize the sequence backward</h3>
+          <p>At every position, the pipeline keeps soft scores, or logits, for all 20 amino acids. It folds those scores, measures the difference from the target, and backpropagates the error to improve the sequence.</p>
+        </article>
+        <article class="how-step">
+          <span class="step-number">03</span>
+          <h3>Re-fold, rotate, and select</h3>
+          <p>We repeat the optimization many times, fold the resulting discrete sequences again from scratch, and keep the candidate whose rendered silhouette looks most like the intended letter.</p>
+        </article>
+      </div>
+
+      <p class="how-note">
+        These are computational design hypotheses, not experimentally validated proteins. They may
+        fold as predicted, but testing would be required to know how they behave in the lab. The full
+        pipeline is available in the <a href="https://github.com/alexpeys/shape2prot">shape2prot repository</a>.
+      </p>
     </section>
   </main>
 
