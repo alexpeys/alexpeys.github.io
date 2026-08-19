@@ -281,6 +281,9 @@
   <script>
     (() => {
       const GLYPH_DIR = "font/";
+      // Bump when a glyph changes so GitHub Pages/browser caches cannot retain
+      // an older protein cartoon under the same filename.
+      const FONT_VERSION = "575bf60";
       const input = document.querySelector("#text");
       const banner = document.querySelector("#banner");
       const size = document.querySelector("#size");
@@ -296,7 +299,7 @@
       }
 
       function glyphPath(letter) {
-        return `${GLYPH_DIR}${letter}.png`;
+        return `${GLYPH_DIR}${letter}.png?v=${FONT_VERSION}`;
       }
 
       function render() {
