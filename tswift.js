@@ -1,4 +1,5 @@
 const SONGS = [
+  { slug: "willow", title: "willow" },
   { slug: "better-than-revenge", title: "Better Than Revenge" },
   { slug: "eyes-open-tv", title: "Eyes Open (Taylor's Version)" },
   { slug: "back-to-december-tv", title: "Back To December (Taylor's Version)" },
