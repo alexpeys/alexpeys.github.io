@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Life Comes At You Swiftly</title>
+    <link rel="stylesheet" href="./tswift.css">
+  </head>
+  <body>
+    <main>
+      <section class="intro">
+        <h1>Life Comes At You Swiftly</h1>
+      </section>
+
+      <section class="song-picker" aria-labelledby="song-picker-label">
+        <label id="song-picker-label" for="song-select">SONG</label>
+        <div class="select-wrap">
+          <select id="song-select" aria-label="Choose a song"></select>
+          <span aria-hidden="true">⌄</span>
+        </div>
+      </section>
+
+      <section class="session" aria-labelledby="song-title">
+        <div class="session-heading">
+          <div>
+            <p class="eyebrow">NOW MIXING</p>
+            <h2 id="song-title">Better Than Revenge</h2>
+          </div>
+          <p id="load-status" role="status">Loading stems…</p>
+        </div>
+
+        <div class="transport">
+          <button id="play" class="play" type="button" aria-label="Play all stems">▶</button>
+          <div class="timeline-wrap">
+            <div class="time-row"><span id="current-time">0:00</span><span id="duration-time">0:00</span></div>
+            <input id="timeline" type="range" min="0" max="1000" value="0" aria-label="Song position">
+          </div>
+          <div class="transport-actions">
+            <button id="loop-toggle" class="loop-toggle" type="button" aria-pressed="false">↻ LOOP</button>
+            <button id="reset-mix" type="button">RESET MIX</button>
+          </div>
+        </div>
+
+        <section id="loop-panel" class="loop-panel" hidden aria-label="Loop region editor">
+          <div class="loop-panel-title">
+            <div><span class="loop-light"></span><strong>LOOP REGION</strong></div>
+            <span id="loop-summary">0:00 — 0:00</span>
+          </div>
+          <div class="loop-range-row">
+            <label><span>START</span><input id="loop-start" type="range" min="0" max="1000" value="0" aria-label="Loop start"><output id="loop-start-time">0:00</output></label>
+            <label><span>END</span><input id="loop-end" type="range" min="0" max="1000" value="1000" aria-label="Loop end"><output id="loop-end-time">0:00</output></label>
+          </div>
+          <div class="loop-visual" aria-hidden="true"><div id="loop-selection"></div></div>
+          <div class="loop-buttons">
+            <button id="mark-start" type="button">SET START AT PLAYHEAD</button>
+            <button id="mark-end" type="button">SET END AT PLAYHEAD</button>
+            <button id="whole-song" type="button">WHOLE SONG</button>
+          </div>
+        </section>
+
+        <div class="track-legend" aria-hidden="true"><span>TRACK</span><span>VOLUME</span><span>CONTROLS</span></div>
+        <div id="tracks" class="tracks"></div>
+        <p class="tip"><b>TIP</b> 100 is the original level. Above 100 boosts a stem; mute removes it and solo plays it alone.</p>
+      </section>
+    </main>
+
+    <template id="track-template">
+      <article class="track">
+        <div class="identity"><span class="track-color"></span><div><strong></strong><small>MP3 STEM · 320 KBPS</small></div></div>
+        <label class="volume"><input type="range" min="0" max="200" value="100"><output>100</output></label>
+        <div class="track-actions"><button class="mute" type="button" aria-pressed="false">M</button><button class="solo" type="button" aria-pressed="false">S</button></div>
+      </article>
+    </template>
+
+    <script src="./tswift.js"></script>
+  </body>
+</html>
