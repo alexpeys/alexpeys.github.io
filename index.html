@@ -8,23 +8,50 @@
     <link rel="preload" as="image" href="alex-zoomzoom.jpg?v=3">
     <link rel="preload" as="image" href="zoomzoom-car.jpg">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --bg: #000;
+            --ink: #fff;
+            --muted: #aaa;
+            --line: #333;
+        }
+
+        .details dd {
+            color: #fff;
+        }
+
+        .portrait img {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .portrait {
+                justify-self: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <main class="site">
         <section class="hero" aria-label="Introduction">
             <header class="site-header">
                 <h1>Alex Peysakhovich</h1>
+                <p style="margin: 16px 0 0; text-align: center; color: var(--muted); font-size: 1.2rem;">Partner at Sutter Hill Ventures</p>
             </header>
 
             <div class="intro">
                 <dl class="details">
                     <div>
-                        <dt>Current</dt>
-                        <dd>Partner at Sutter Hill Ventures. I help our biotech incubations build their AI stacks. These days I am very interested in generative models for protein engineering and small molecule design as well as computer vision for microscopy.</dd>
+                        <dt><strong>Role</strong></dt>
+                        <dd>I help our biotech incubations and portfolio companies build their AI stacks.</dd>
                     </div>
                     <div>
-                        <dt>Past</dt>
-                        <dd>Basic and applied research on reinforcement learning, large graphs, multi-agent cooperation, human decision making at Facebook AI Research. Large scale machine learning for ranking, retrieval, network effect estimation, and A/B testing at Facebook News Feed.</dd>
+                        <dt><strong>Focus</strong></dt>
+                        <dd>Generative models for protein engineering and small molecule design. Computer vision models for microscopy.</dd>
+                    </div>
+                    <div>
+                        <dt><strong>Past</strong></dt>
+                        <dd>Facebook AI Research, working on RL, graphs, and multi-agent cooperation. Ran applied ML at Facebook News Feed, focusing on ranking, network effect estimation, and algorithm alignment.</dd>
                     </div>
                 </dl>
             </div>
