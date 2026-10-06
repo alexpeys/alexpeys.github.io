@@ -24,6 +24,17 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
+        .miniblog-link {
+            margin: 20px 0 0;
+            text-align: center;
+        }
+
+        .miniblog-link a {
+            color: var(--ink);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
         @media (max-width: 900px) {
             .portrait {
                 justify-self: center;
@@ -37,6 +48,9 @@
             <header class="site-header">
                 <h1>Alex Peysakhovich</h1>
                 <p style="margin: 16px 0 0; text-align: center; color: var(--muted); font-size: 1.2rem;">Partner at Sutter Hill Ventures</p>
+                <nav class="miniblog-link" aria-label="Writing">
+                    <a href="miniblog.html">Miniblog</a>
+                </nav>
             </header>
 
             <div class="intro">

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Testing the Looks — a miniblog post by Alex Peysakhovich.">
+    <title>Testing the Looks · Miniblog</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            background: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.65;
+        }
+
+        main {
+            width: min(720px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 88px 0 96px;
+        }
+
+        h1 {
+            margin: 0 0 64px;
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 0 0 16px;
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+
+        p {
+            margin: 0 0 28px;
+        }
+
+        figure {
+            margin: 32px 0 0;
+        }
+
+        figure img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        figcaption {
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding-top: 48px;
+            }
+
+            h1 {
+                margin-bottom: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <article aria-labelledby="post-title">
+            <h1 id="post-title">Testing the Looks</h1>
+            <section aria-labelledby="hi">
+                <h2 id="hi">hi</h2>
+                <p>this is just seeing how figures appear</p>
+                <figure>
+                    <img src="miniblog-example.svg" width="1200" height="640" alt="Placeholder image for testing the figure layout.">
+                    <figcaption>[caption]</figcaption>
+                </figure>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
